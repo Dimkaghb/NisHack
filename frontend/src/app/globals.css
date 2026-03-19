@@ -1,0 +1,32 @@
+@import "tailwindcss";
+
+:root {
+  --neutral-30: rgb(26, 22, 21);
+  --neutral-20: rgb(69, 63, 61);
+  --neutral-10: rgb(117, 113, 112);
+  --stroke: rgb(228, 226, 226);
+  --beige-40: rgb(237, 223, 208);
+  --beige-30: rgb(244, 230, 218);
+  --beige-20: rgb(241, 235, 229);
+  --beige-10: rgb(244, 241, 238);
+  --beige-0: rgb(255, 255, 255);
+  --bg-white: rgb(249, 248, 248);
+  --accent-blue: rgb(21, 108, 194);
+  --blue-30: rgb(132, 185, 239);
+  --blue-20: rgb(156, 193, 231);
+  --blue-10: rgb(226, 236, 245);
+}
+
+@theme inline {
+  --color-background: var(--bg-white);
+  --color-foreground: var(--neutral-30);
+  --font-sans: var(--font-plus-jakarta);
+}
+
+body {
+  background: var(--bg-white);
+  color: var(--neutral-30);
+  font-family: var(--font-plus-jakarta), "Plus Jakarta Sans", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
