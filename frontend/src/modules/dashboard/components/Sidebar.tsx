@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 
-function DreeelioLogo() {
+function AimaqLogo() {
   return (
     <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
       <path
@@ -213,12 +213,12 @@ export function Sidebar({ userName }: SidebarProps) {
         style={{ padding: "16px 14px 8px" }}
       >
         <Link href="/" className="flex items-center gap-2">
-          <DreeelioLogo />
+          <AimaqLogo />
           <span
             className="font-semibold tracking-[-0.02em]"
             style={{ fontSize: 16, color: "var(--neutral-30)" }}
           >
-            Dreelio
+            Aimaq
           </span>
         </Link>
         <button

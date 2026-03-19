@@ -1,6 +1,6 @@
 "use client";
 
-/* Shared scroll-triggered animation primitives for the Dreelio landing page.
+/* Shared scroll-triggered animation primitives for the Aimaq landing page.
    All use Framer Motion's whileInView so they fire as the element enters the viewport.
    `once: true` — animation plays only once (no re-trigger on scroll back up).
    Easing: [0.22, 1, 0.36, 1] — smooth deceleration, same feel as Framer's default spring. */

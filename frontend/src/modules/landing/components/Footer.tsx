@@ -41,7 +41,7 @@ function DreetlioLogo() {
         <path d="M11 6C11 6 7 8.5 7 12C7 14.209 8.791 16 11 16C13.209 16 15 14.209 15 12C15 9.5 13 7 11 6Z" fill="rgb(249, 248, 248)" />
       </svg>
       <span className="font-semibold text-[17px] tracking-[-0.02em]" style={{ color: "var(--neutral-30)" }}>
-        Dreelio
+        Aimaq
       </span>
     </div>
   );
@@ -156,7 +156,7 @@ export function Footer() {
             className="leading-[150%] transition-opacity hover:opacity-70"
             style={{ fontSize: 16, color: "var(--neutral-10)" }}
           >
-            © 2025 Dreelio. Created by Leon Chike
+            © 2025 Aimaq. Created by Leon Chike
           </Link>
           <Link
             href="https://framer.com"

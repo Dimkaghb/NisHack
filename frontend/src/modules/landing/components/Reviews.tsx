@@ -19,7 +19,7 @@ const reviews = [
   },
   {
     quote:
-      "Dreelio replaced four different tools for me. Now I manage proposals, contracts, invoices, and time tracking all in one place. It's changed how I run my studio.",
+      "Aimaq replaced four different tools for me. Now I manage proposals, contracts, invoices, and time tracking all in one place. It's changed how I run my studio.",
     name: "Marcus Obi",
     role: "Founder, Obi Creative Studio",
     initials: "MO",
@@ -35,7 +35,7 @@ const reviews = [
   },
   {
     quote:
-      "I've tried every agency tool on the market. Dreelio is the first one that actually feels like it was designed for creatives. The interface is stunning.",
+      "I've tried every agency tool on the market. Aimaq is the first one that actually feels like it was designed for creatives. The interface is stunning.",
     name: "Raj Mehta",
     role: "Creative Director, Pixels & Co.",
     initials: "RM",
@@ -51,7 +51,7 @@ const reviews = [
   },
   {
     quote:
-      "Time tracking used to be the thing I hated most about freelancing. Dreelio makes it so effortless — it just runs in the background and the reports are beautiful.",
+      "Time tracking used to be the thing I hated most about freelancing. Aimaq makes it so effortless — it just runs in the background and the reports are beautiful.",
     name: "Tom Weiss",
     role: "Motion Designer, Studio Nine",
     initials: "TW",
@@ -172,7 +172,7 @@ export function Reviews() {
               color: "var(--neutral-30)",
             }}
           >
-            "Dreelio is by far the best agency tool I have ever used"
+            "Aimaq is by far the best agency tool I have ever used"
           </blockquote>
           {/* Author */}
           <div className="flex items-center gap-4">

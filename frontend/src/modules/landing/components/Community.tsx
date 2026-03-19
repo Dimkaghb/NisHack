@@ -25,7 +25,7 @@ const cards = [
   {
     platform: "X/Twitter",
     followers: "15.2K followers",
-    description: "Stay updated on new features and discover how others are using Dreelio.",
+    description: "Stay updated on new features and discover how others are using Aimaq.",
     cta: "Follow us",
     href: "https://x.com/Leonc7303",
     icon: <XIcon />,
@@ -34,7 +34,7 @@ const cards = [
   {
     platform: "YouTube",
     followers: "32K subscribers",
-    description: "Tips, tutorials, and in-depth feature guides to inspire and enhance your Dreelio workflow.",
+    description: "Tips, tutorials, and in-depth feature guides to inspire and enhance your Aimaq workflow.",
     cta: "Subscribe",
     href: "https://www.youtube.com/@Framer",
     icon: <YouTubeIcon />,

@@ -180,14 +180,14 @@ export function Benefits() {
               <div className="relative w-full" style={{ height: 176 }}>
                 <Image
                   src="https://framerusercontent.com/images/o5PFg7LTymdZ6P4tuEGy4oFUFzw.svg"
-                  alt="Dreelio workflow customization illustration"
+                  alt="Aimaq workflow customization illustration"
                   fill className="object-contain object-left"
                   sizes="(max-width: 768px) 100vw, 540px" unoptimized
                 />
               </div>
               <p className="leading-[150%]" style={{ fontSize: 18, color: "var(--neutral-20)" }}>
                 Personalize every detail. From branding and interface layout to
-                colors and menus, so Dreelio feels like an extension of your brand.
+                colors and menus, so Aimaq feels like an extension of your brand.
               </p>
             </StaggerItem>
 
@@ -202,7 +202,7 @@ export function Benefits() {
                 <IntegrationsRow items={integrationRow2} direction="right" />
               </div>
               <p className="leading-[150%]" style={{ fontSize: 18, color: "var(--neutral-20)" }}>
-                Seamless integrations. Plug Dreelio into the tools you love.
+                Seamless integrations. Plug Aimaq into the tools you love.
                 Set up automations, sync your data, and make your systems work smarter together.
               </p>
             </StaggerItem>

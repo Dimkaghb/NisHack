@@ -4,7 +4,7 @@
    Layout: horizontal stack, center distribution, center alignment
    Content: maxWidth=800, gap=32 vertical, center aligned
    Texts: gap=16 | "Ready to get started" Heading 2
-          "Download Dreelio for free. No credit card required." Body Large
+         "Download Aimaq for free. No credit card required." Body Large
    Button: Primary variant, "Try Freelio free"
    CloudLeft:  position=absolute left=-280, width=480, top=-40, bottom=-28
    CloudRight: position=absolute right=-280, width=480, top=-40, bottom=-28
@@ -75,7 +75,7 @@ export function CTABanner() {
             className="leading-[150%]"
             style={{ fontSize: 18, color: "var(--neutral-20)" }}
           >
-            Download Dreelio for free. No credit card required.
+            Download Aimaq for free. No credit card required.
           </p>
         </div>
 

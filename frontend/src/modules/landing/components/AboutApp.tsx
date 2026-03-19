@@ -14,13 +14,13 @@ const TABS = [
     id: "mobile",
     label: "Mobile App",
     src: "https://framerusercontent.com/images/W508S15xkXJdvalNWW9jYJSIKg.png",
-    alt: "Dreelio mobile app — manage your freelance work on the go",
+    alt: "Aimaq mobile app — manage your freelance work on the go",
   },
   {
     id: "web",
     label: "Web App",
     src: "https://framerusercontent.com/images/pfcMvn2yqXD2Cl6VWthMkHlhaKQ.png",
-    alt: "Dreelio web app — full-featured dashboard for your freelance business",
+    alt: "Aimaq web app — full-featured dashboard for your freelance business",
   },
 ];
 

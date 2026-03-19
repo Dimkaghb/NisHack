@@ -10,7 +10,7 @@ const plusJakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Dreelio — Run your freelance business like a pro",
+  title: "Aimaq — Run your freelance business like a pro",
   description:
     "All-in-one platform for managing clients, projects, and payments without the chaos. From first contract to final invoice, we've got your back.",
 };

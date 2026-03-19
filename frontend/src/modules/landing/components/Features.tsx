@@ -195,7 +195,7 @@ function TextColumn({
           className="inline-flex items-center self-start px-6 py-[18px] rounded-full font-semibold text-white text-[16px] leading-[1.2] transition-opacity duration-150 hover:opacity-85"
           style={{ backgroundColor: "var(--neutral-30)" }}
         >
-          Try Dreelio free
+          Try Aimaq free
         </Link>
       </div>
 
@@ -228,7 +228,7 @@ export function Features() {
             <ImagePanel
               bgUrl={block1.imageBg}
               illustrationUrl={block1.illustration}
-              alt="Dreelio project management — task board and time tracking interface"
+              alt="Aimaq project management — task board and time tracking interface"
             />
           </SlideIn>
           <SlideIn from="right" delay={0.1} className="flex" style={{ flex: "1 1 0", minWidth: 0 }}>
@@ -255,7 +255,7 @@ export function Features() {
             <ImagePanel
               bgUrl={block2.imageBg}
               illustrationUrl={block2.illustration}
-              alt="Dreelio financial management — invoice and earnings tracking interface"
+              alt="Aimaq financial management — invoice and earnings tracking interface"
             />
           </SlideIn>
         </div>

@@ -210,7 +210,7 @@ function HighlightedCard({
             className="text-[14px] font-medium leading-[1.4]"
             style={{ color: "var(--neutral-20)" }}
           >
-            Dreelio Premium
+            Aimaq Premium
           </span>
           {annual && (
             <span
@@ -299,7 +299,7 @@ export function Pricing() {
       >
         <StaggerItem style={{ flex: "1 1 280px", maxWidth: 341 }}>
           <DefaultCard
-            label="Dreelio Basic"
+            label="Aimaq Basic"
             name="Basic"
             price="Free"
             desc="For solo use with light needs."
@@ -314,7 +314,7 @@ export function Pricing() {
 
         <StaggerItem style={{ flex: "1 1 280px", maxWidth: 341 }}>
           <DefaultCard
-            label="Dreelio Enterprise"
+            label="Aimaq Enterprise"
             name="Enterprise"
             price="Flexible"
             desc="For team use with light needs."

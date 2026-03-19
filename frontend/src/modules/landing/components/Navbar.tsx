@@ -26,7 +26,7 @@ export function Navbar() {
               className="text-[17px] font-semibold tracking-[-0.02em]"
               style={{ color: "var(--neutral-30)" }}
             >
-              Dreelio
+              Aimaq
             </span>
           </Link>
 
@@ -50,7 +50,7 @@ export function Navbar() {
             className="inline-flex items-center px-6 py-[14px] rounded-full text-[15px] font-semibold text-white transition-opacity duration-150 hover:opacity-85 shrink-0"
             style={{ backgroundColor: "var(--neutral-30)" }}
           >
-            Try Dreelio free
+            Try Aimaq free
           </Link>
         </div>
 
@@ -59,7 +59,7 @@ export function Navbar() {
           <Link href="/" className="flex items-center gap-2">
             <DreetlioLogo />
             <span className="text-[16px] font-semibold" style={{ color: "var(--neutral-30)" }}>
-              Dreelio
+              Aimaq
             </span>
           </Link>
           <button
@@ -92,7 +92,7 @@ export function Navbar() {
               className="mt-2 inline-flex justify-center items-center px-6 py-3 rounded-full text-[15px] font-semibold text-white"
               style={{ backgroundColor: "var(--neutral-30)" }}
             >
-              Try Dreelio free
+            Try Aimaq free
             </Link>
           </div>
         )}

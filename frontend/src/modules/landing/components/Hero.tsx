@@ -92,7 +92,7 @@ export function Hero() {
               className="inline-flex items-center font-semibold text-[16px] leading-[1.2] text-white transition-opacity hover:opacity-85"
               style={{ padding: "18px 24px", borderRadius: "100px", backgroundColor: "var(--neutral-30)" }}
             >
-              Try Dreelio free
+              Try Aimaq free
             </Link>
             <Link
               href="/#features"
@@ -113,7 +113,7 @@ export function Hero() {
         >
           <Image
             src="https://framerusercontent.com/images/JeI7uULY0av9DxD7q7NVLTuoNc.png"
-            alt="Dreelio dashboard — manage clients, projects and payments"
+            alt="Aimaq dashboard — manage clients, projects and payments"
             fill
             priority
             className="object-cover object-top"
