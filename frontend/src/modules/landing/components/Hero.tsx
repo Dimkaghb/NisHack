@@ -63,7 +63,7 @@ export function Hero() {
               className="w-full text-center font-semibold leading-[120%] tracking-[-0.03em]"
               style={{ fontSize: "clamp(40px, 6.5vw, 76px)", color: "var(--neutral-30)" }}
             >
-              Управляйте своим фриланс-бизнесом как профессионал
+              Подберите идеальную локацию для бизнеса
             </motion.h1>
 
             <motion.p
@@ -75,8 +75,7 @@ export function Hero() {
                 maxWidth: 700,
               }}
             >
-              Единая платформа для управления клиентами, проектами и платежами без
-              хаоса. От первого договора до финального счета — мы рядом.
+              Aimaq оценивает трафик, конкурентов и транспорт, чтобы вы получили рейтинг лучших локаций с понятными пояснениями. Заполните параметры — результат появится за ~60 секунд.
             </motion.p>
           </div>
 
@@ -91,14 +90,14 @@ export function Hero() {
               className="inline-flex items-center font-semibold text-[16px] leading-[1.2] text-white transition-opacity hover:opacity-85"
               style={{ padding: "18px 24px", borderRadius: "100px", backgroundColor: "var(--neutral-30)" }}
             >
-              Попробовать Aimaq бесплатно
+              Запустить подбор
             </Link>
             <Link
               href="/#features"
               className="inline-flex items-center font-semibold text-[16px] leading-[1.2] transition-colors hover:bg-black/5"
               style={{ padding: "18px 24px", borderRadius: "100px", backgroundColor: "rgba(255,255,255,0.1)", color: "var(--neutral-30)" }}
             >
-              Посмотреть возможности
+              Как это работает
             </Link>
           </motion.div>
         </div>
@@ -112,7 +111,7 @@ export function Hero() {
         >
           <Image
             src="https://framerusercontent.com/images/JeI7uULY0av9DxD7q7NVLTuoNc.png"
-            alt="Панель управления Aimaq — управление клиентами, проектами и платежами"
+            alt="Скрин Aimaq — подбор локаций и рейтинг под ваш бизнес"
             fill
             priority
             className="object-cover object-top"

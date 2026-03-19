@@ -68,7 +68,7 @@ export function Footer() {
             <div className="flex flex-col gap-4">
               <DreetlioLogo />
               <p className="leading-[150%]" style={{ fontSize: 16, color: "var(--neutral-20)" }}>
-                Любимое программное обеспечение для управления бизнесом. Создано для ранних основателей стартапов.
+                AI-помощник для подбора коммерческих локаций в вашем городе: трафик, конкуренты и транспорт в одном рейтинге.
               </p>
             </div>
             {/* Social links — 40px circles */}

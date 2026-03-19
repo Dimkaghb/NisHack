@@ -12,15 +12,15 @@ import { FadeUp, ScaleUp } from "./motion";
 const TABS = [
   {
     id: "mobile",
-    label: "Mobile App",
+    label: "Мобильное приложение",
     src: "https://framerusercontent.com/images/W508S15xkXJdvalNWW9jYJSIKg.png",
-    alt: "Aimaq mobile app — manage your freelance work on the go",
+    alt: "Aimaq — подбор локаций для бизнеса с мобильного",
   },
   {
     id: "web",
-    label: "Web App",
+    label: "Веб-приложение",
     src: "https://framerusercontent.com/images/pfcMvn2yqXD2Cl6VWthMkHlhaKQ.png",
-    alt: "Aimaq web app — full-featured dashboard for your freelance business",
+    alt: "Aimaq — подбор локаций и рейтинг в веб-интерфейсе",
   },
 ];
 
@@ -43,7 +43,7 @@ export function AboutApp() {
             className="font-semibold tracking-widest uppercase"
             style={{ fontSize: "15px", color: "var(--neutral-10)" }}
           >
-            Seamless across devices
+            Работает на всех устройствах
           </span>
           <h2
             className="font-semibold leading-[120%] tracking-[-0.03em]"
@@ -52,7 +52,7 @@ export function AboutApp() {
               color: "var(--neutral-30)",
             }}
           >
-            Work from anywhere, stay in sync
+            Подбирайте локации где угодно — и возвращайтесь к результатам в один клик
           </h2>
         </FadeUp>
 

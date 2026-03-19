@@ -25,7 +25,7 @@ const cards = [
   {
     platform: "X/Twitter",
     followers: "15,2 тыс. подписчиков",
-    description: "Следите за обновлениями и узнавайте, как другие используют Aimaq.",
+    description: "Подборки локаций и советы по аренде в вашем городе: трафик, конкуренты и транспорт.",
     cta: "Подписаться",
     href: "https://x.com/Leonc7303",
     icon: <XIcon />,
@@ -34,7 +34,7 @@ const cards = [
   {
     platform: "YouTube",
     followers: "32 тыс. подписчиков",
-    description: "Советы, уроки и подробные гайды, чтобы вдохновлять и улучшать ваш рабочий процесс в Aimaq.",
+    description: "Видео-уроки о выборе коммерческой локации: как читать рейтинг и объяснения Aimaq.",
     cta: "Подписаться",
     href: "https://www.youtube.com/@Framer",
     icon: <YouTubeIcon />,

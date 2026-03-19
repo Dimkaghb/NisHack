@@ -102,7 +102,7 @@ export function LogosTicker() {
           className="text-center leading-[150%]"
           style={{ fontSize: "16px", color: "var(--neutral-10)" }}
         >
-          Trusted by 7,000+ top startups, freelancers and studios
+          Доверяют 7 000+ предпринимателей по Казахстану
         </p>
 
         {/* Ticker with CSS mask fades — works on any background */}

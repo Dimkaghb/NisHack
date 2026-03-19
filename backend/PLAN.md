@@ -5,15 +5,15 @@
 
 ---
 
-## What is LocationIQ
+## Что такое Aimaq
 
-LocationIQ is a multi-agent AI system that helps business owners in Almaty find the optimal commercial space to rent or buy. Instead of spending days manually browsing Krisha.kz, walking streets, and calling brokers, a user specifies their business type and budget — and the system delivers scored, explained location recommendations in under 60 seconds.
+Aimaq — это multi-agent AI-система, которая помогает предпринимателям в вашем городе находить оптимальные коммерческие помещения для аренды или покупки. Вместо того чтобы тратить дни на ручной просмотр Krisha.kz, прогулки по улицам и звонки риэлторам, вы указываете тип бизнеса и бюджет — а система в течение 60 секунд выдает ранжированные рекомендации локаций с понятными пояснениями.
 
 ### The problem it solves
 
-Choosing a commercial location in Almaty is one of the most consequential decisions a small business makes. A cafe in the wrong district fails not because the food is bad, but because no one walks past. An office on the wrong street loses employees who can't get there by bus. Most entrepreneurs rely on gut feeling, a broker's incentives, or whatever happens to be listed that week.
+Choosing a commercial location in your city is one of the most consequential decisions a small business makes. A cafe in the wrong district fails not because the food is bad, but because no one walks past. An office on the wrong street loses employees who can't get there by bus. Most entrepreneurs rely on gut feeling, a broker's incentives, or whatever happens to be listed that week.
 
-LocationIQ replaces that guesswork with data: pedestrian flow, competitor density, transit access — all weighted specifically for the type of business being opened.
+Aimaq убирает «угадайку» и опирается на данные: пешеходный трафик, плотность конкурентов, доступность транспорта — всё взвешивается под конкретный тип бизнеса, который вы запускаете.
 
 ### How it works
 
@@ -29,7 +29,7 @@ LocationIQ replaces that guesswork with data: pedestrian flow, competitor densit
 
 ### What makes it different from just browsing Krisha
 
-A standard real estate search returns listings sorted by price or recency. LocationIQ returns listings sorted by **fit for your specific business**, with a written explanation of the reasoning. The user doesn't need to interpret data — they read: *"Это место на 34% превосходит второе по трафику. В пятницу днём здесь проходит около 800 человек. Ближайший конкурент — 620 метров."*
+A стандартный поиск по недвижимости показывает объявления, отсортированные по цене или «свежести». Aimaq ранжирует локации по тому, насколько они подходят **именно вашему бизнесу**, и добавляет письменное объяснение логики подбора. Вам не нужно разбираться в цифрах — вы читаете готовое пояснение: *"Это место на 34% превосходит второе по трафику. В пятницу днём здесь проходит около 800 человек. Ближайший конкурент — 620 метров."*
 
 Then, with one click, they have a ready-to-send letter to the landlord in Russian.
 

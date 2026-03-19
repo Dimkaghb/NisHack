@@ -68,14 +68,14 @@ export function CTABanner() {
               color: "var(--neutral-30)",
             }}
           >
-            Готовы начать?
+            Готовы подобрать локацию?
           </h2>
           {/* Body Large: 18px regular 150% leading */}
           <p
             className="leading-[150%]"
             style={{ fontSize: 18, color: "var(--neutral-20)" }}
           >
-            Скачайте Aimaq бесплатно. Без кредитной карты.
+            Aimaq соберёт рейтинг лучших локаций в вашем городе и объяснит, почему они подходят именно вашему бизнесу.
           </p>
         </div>
 
@@ -89,7 +89,7 @@ export function CTABanner() {
             backgroundColor: "var(--neutral-30)",
           }}
         >
-          Попробовать Aimaq бесплатно
+          Начать подбор
         </Link>
       </FadeUp>
     </section>

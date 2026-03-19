@@ -96,7 +96,7 @@ function FeaturedCard() {
       >
         <Image
           src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=640&q=80&auto=format&fit=crop"
-            alt="Офис креативного агентства"
+            alt="Коммерческие локации — подбор с Aimaq"
           fill
           className="object-cover"
           sizes="(max-width: 768px) 100vw, 50vw"
@@ -114,19 +114,19 @@ function FeaturedCard() {
             className="font-semibold leading-[125%] tracking-[-0.02em]"
             style={{ fontSize: "clamp(20px, 2.4vw, 28px)", color: "var(--neutral-30)" }}
           >
-            Как запустить креативное агентство на 100k в 2025 году
+            Как выбрать локацию для бизнеса: 7 шагов
           </h3>
           <p
             className="text-[15px] leading-[150%]"
             style={{ color: "var(--neutral-20)" }}
           >
-            Узнайте, как начать путь к собственному агентству с нашим подробным руководством.
+            Подробное руководство: трафик, конкуренты, транспорт и бюджет — с понятными критериями выбора.
           </p>
         </div>
 
         {/* Author row + FEATURED badge at bottom */}
         <div className="flex items-end justify-between flex-wrap" style={{ gap: 12 }}>
-          <Author name="Dhyna Phils" role="Руководитель маркетинга" />
+          <Author name="Dhyna Phils" role="Аналитик коммерческих локаций" />
           <Badge label="РЕКОМЕНДУЕМ" />
         </div>
       </div>
@@ -179,7 +179,7 @@ function SmallCard({
           </h4>
           <Badge label={badge} />
         </div>
-        <Author name="Dyna Phils" role="Руководитель маркетинга" />
+        <Author name="Dyna Phils" role="Аналитик коммерческих площадей" />
       </div>
     </div>
   );
@@ -204,7 +204,7 @@ export function Blog() {
             maxWidth: 600,
           }}
         >
-          Идеи, чтобы прокачать ваш фриланс-опыт
+          Статьи и советы по выбору локаций
         </h2>
       </FadeUp>
 
@@ -220,21 +220,21 @@ export function Blog() {
           <StaggerItem style={{ flex: "1 1 280px", minWidth: 0 }}>
             <SmallCard
               image="https://images.unsplash.com/photo-1517430816045-df4b7de11d1d?w=640&q=80&auto=format&fit=crop"
-              title="Топ-10 сервисов для digital-агентств"
+              title="Топ-10 районов вашего города для кафе"
               badge="ИНСТРУМЕНТЫ"
             />
           </StaggerItem>
           <StaggerItem style={{ flex: "1 1 280px", minWidth: 0 }}>
             <SmallCard
               image="https://images.unsplash.com/photo-1504701954957-2010ec3bcec1?w=640&q=80&auto=format&fit=crop"
-              title="Полное руководство по успеху проектов в 2026 году"
+              title="Как оценить окупаемость локации в 2026"
               badge="ПОЛЕЗНОЕ"
             />
           </StaggerItem>
           <StaggerItem style={{ flex: "1 1 280px", minWidth: 0 }}>
             <SmallCard
               image="https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=640&q=80&auto=format&fit=crop"
-              title="Что такое биллируемые часы"
+              title="Что важно учитывать по конкурентам рядом"
               badge="УПРАВЛЕНИЕ"
             />
           </StaggerItem>

@@ -159,11 +159,11 @@ export function Benefits() {
         {/* Header */}
         <FadeUp className="flex flex-col items-center gap-5 w-full text-center" style={{ maxWidth: 800, alignSelf: "center" }}>
           <span className="font-semibold tracking-widest uppercase" style={{ fontSize: 15, color: "var(--neutral-10)" }}>
-            возможности
+            подбор локаций
           </span>
           <h2 className="font-semibold leading-[120%] tracking-[-0.03em]"
             style={{ fontSize: "clamp(32px, 4.5vw, 52px)", color: "var(--neutral-30)" }}>
-            Создано для фрилансеров, работает благодаря простоте
+            Подбор локаций на основе данных — быстро и прозрачно
           </h2>
         </FadeUp>
 
@@ -175,18 +175,18 @@ export function Benefits() {
             <StaggerItem className="flex flex-col" style={{ flex: "1 1 460px", backgroundColor: "rgba(240, 234, 229, 1)", borderRadius: 24, padding: 32, gap: 80, overflow: "hidden" }}>
               <h3 className="font-semibold leading-[140%] tracking-[-0.03em]"
                 style={{ fontSize: "clamp(20px, 2vw, 28px)", color: "var(--neutral-30)" }}>
-                Умное, гибкое и создано под ваш рабочий процесс
+                Персональные параметры под ваш бизнес
               </h3>
               <div className="relative w-full" style={{ height: 176 }}>
                 <Image
                   src="https://framerusercontent.com/images/o5PFg7LTymdZ6P4tuEGy4oFUFzw.svg"
-                  alt="Aimaq workflow customization illustration"
+                  alt="Aimaq — настройка параметров под бизнес"
                   fill className="object-contain object-left"
                   sizes="(max-width: 768px) 100vw, 540px" unoptimized
                 />
               </div>
               <p className="leading-[150%]" style={{ fontSize: 18, color: "var(--neutral-20)" }}>
-                Настраивайте каждую деталь. От фирменного стиля и раскладки интерфейса до цветов и меню — так Aimaq становится продолжением вашего бренда.
+                Укажите формат бизнеса, район, бюджет, минимальную площадь и допустимых конкурентов — Aimaq настроит подбор под ваши цели.
               </p>
             </StaggerItem>
 
@@ -194,14 +194,14 @@ export function Benefits() {
             <StaggerItem className="flex flex-col" style={{ flex: "1 1 460px", backgroundColor: "rgba(241, 235, 229, 1)", borderRadius: 24, padding: 32, gap: 80, overflow: "hidden" }}>
               <h3 className="font-semibold leading-[140%] tracking-[-0.03em]"
                 style={{ fontSize: "clamp(20px, 2vw, 28px)", color: "var(--neutral-30)" }}>
-                Легко интегрируется с теми инструментами, которыми вы уже пользуетесь
+                Обоснованный рейтинг по данным
               </h3>
               <div className="flex flex-col" style={{ gap: 16, height: 176 }}>
                 <IntegrationsRow items={integrationRow1} direction="left" />
                 <IntegrationsRow items={integrationRow2} direction="right" />
               </div>
               <p className="leading-[150%]" style={{ fontSize: 18, color: "var(--neutral-20)" }}>
-                Бесшовные интеграции. Подключайте Aimaq к тем инструментам, которые вам нравятся. Настройте автоматизации, синхронизируйте данные и сделайте свои системы умнее вместе.
+                Мы собираем объявления и дополняем их оценками трафика, конкурентов и транспортной доступности — чтобы рейтинг был понятным и справедливым.
               </p>
             </StaggerItem>
           </StaggerGroup>
@@ -211,22 +211,22 @@ export function Benefits() {
             <StaggerItem style={{ flex: "1 1 0", minWidth: 240 }}>
               <BenefitsCard
                 icon={<HandshakeIcon />}
-                title="Совместная работа в реальном времени"
-                description="Держите все обсуждения в одном ритме — используйте комментарии, сообщения и чаты проекта, чтобы оставаться на одной странице."
+                title="Пояснение к каждому месту"
+                description="Вы видите рейтинг и разбор факторов: трафик, конкуренты, транспорт, цена и площадь — без лишней «математики»."
               />
             </StaggerItem>
             <StaggerItem style={{ flex: "1 1 0", minWidth: 240 }}>
               <BenefitsCard
                 icon={<GlobeIcon />}
-                title="Говорит на вашем языке"
-                description="Настройте язык, валюту, время и даты — чтобы всё ощущалось по-настоящему локально."
+                title="Под ваш формат бизнеса"
+                description="Для каждого типа бизнеса важны разные факторы — Aimaq учитывает это при расчёте рейтинга."
               />
             </StaggerItem>
             <StaggerItem style={{ flex: "1 1 0", minWidth: 240 }}>
               <BenefitsCard
                 icon={<LayoutIcon />}
-                title="Покажет всё так, как удобно вам"
-                description="Переключайтесь между разными представлениями: Kanban, карточки, список, таблица, таймлайн и календарь."
+                title="Быстрый результат за ~60 секунд"
+                description="Запустите подбор — и за минуту получите топ локаций в вашем городе с понятным обоснованием."
               />
             </StaggerItem>
           </StaggerGroup>

@@ -84,31 +84,31 @@ const GridIcon = () => (
 
 /* Block 1 data */
 const block1 = {
-  eyebrow: "управление проектами",
-  heading: "Продвигайте каждый проект вперёд",
-  body: "Планируйте, назначайте и сдавайте задачи — всё в одном месте. Благодаря умному учёту задач, срокам и прогрессу в реальном времени вы сохраняете порядок, а клиенты — уверенность.",
+  eyebrow: "подбор локаций по данным",
+  heading: "Локации, где ваш бизнес будет на виду",
+  body: "Aimaq оценивает пешеходный трафик, конкурентов и транспортную доступность — и формирует рейтинг мест под ваш формат.",
   imageBg: "https://framerusercontent.com/images/g690a9Fxc6Y5G69sPCSKq4vjw.png",
   illustration: "https://framerusercontent.com/images/gUEFVWinvZ7dMZa0mUhNZWHNj3U.png",
   pills: [
-    { label: "Задачи", icon: <CheckIcon /> },
-    { label: "Учет времени", icon: <ClockIcon /> },
-    { label: "Табели", icon: <CalendarIcon /> },
-    { label: "Отчеты", icon: <BarChartIcon /> },
+    { label: "Трафик", icon: <BarChartIcon /> },
+    { label: "Конкуренты", icon: <TrendingUpIcon /> },
+    { label: "Транспорт", icon: <ClockIcon /> },
+    { label: "Площадь", icon: <CalendarIcon /> },
   ],
 };
 
 /* Block 2 data */
 const block2 = {
-  eyebrow: "финансовое управление",
-  heading: "Следите за доходом и получайте оплату без лишнего стресса",
-  body: "Создавайте фирменные счета, учитывайте расходы и держите под контролем свои поступления. Независимо от того, выставляете вы по часам или за проект — всё автоматизировано и удобно для налогов.",
+  eyebrow: "объясним выбор",
+  heading: "Понятные рекомендации вместо случайного поиска",
+  body: "Каждая локация получает объяснение с цифрами: ожидаемый поток, ближайшие конкуренты и доступность транспорта. Вы принимаете решение быстрее.",
   imageBg: "https://framerusercontent.com/images/g690a9Fxc6Y5G69sPCSKq4vjw.png",
   illustration: "https://framerusercontent.com/images/thBhwyY3D4d8TRQEbrMU6zSvz8.png",
   pills: [
-    { label: "Счета", icon: <FileTextIcon /> },
-    { label: "Бюджеты", icon: <WalletIcon /> },
-    { label: "Прогнозы", icon: <TrendingUpIcon /> },
-    { label: "Интеграции", icon: <GridIcon /> },
+    { label: "Трафик", icon: <BarChartIcon /> },
+    { label: "Цена аренды", icon: <WalletIcon /> },
+    { label: "Конкуренты", icon: <TrendingUpIcon /> },
+    { label: "Транспорт", icon: <ClockIcon /> },
   ],
 };
 
@@ -195,7 +195,7 @@ function TextColumn({
           className="inline-flex items-center self-start px-6 py-[18px] rounded-full font-semibold text-white text-[16px] leading-[1.2] transition-opacity duration-150 hover:opacity-85"
           style={{ backgroundColor: "var(--neutral-30)" }}
         >
-          Попробовать Aimaq бесплатно
+          Начать подбор
         </Link>
       </div>
 
@@ -228,7 +228,7 @@ export function Features() {
             <ImagePanel
               bgUrl={block1.imageBg}
               illustrationUrl={block1.illustration}
-              alt="Aimaq: управление проектами — доска задач и интерфейс учёта времени"
+              alt="Aimaq — трафик, конкуренты и транспорт для подбора локаций"
             />
           </SlideIn>
           <SlideIn from="right" delay={0.1} className="flex" style={{ flex: "1 1 0", minWidth: 0 }}>
@@ -255,7 +255,7 @@ export function Features() {
             <ImagePanel
               bgUrl={block2.imageBg}
               illustrationUrl={block2.illustration}
-              alt="Aimaq: финансовое управление — выставление счетов и учёт доходов"
+              alt="Aimaq — объяснение рейтинга и подбор локаций под бизнес"
             />
           </SlideIn>
         </div>
