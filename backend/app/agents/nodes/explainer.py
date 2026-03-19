@@ -94,12 +94,12 @@ async def explainer_node(state: dict) -> dict:
     t0 = time.monotonic()
     errors: list[str] = []
 
-    top = state.get("scored_listings", [])[:5]
+    top = state.get("top_listings", []) or state.get("scored_listings", [])[:5]
     if not top:
-        errors.append("explainer_node: no scored_listings to explain")
+        errors.append("explainer_node: no listings to explain")
         return {
             "explanation": "",
-            "errors": state.get("errors", []) + errors,
+            "errors": errors,
         }
 
     try:
@@ -117,5 +117,5 @@ async def explainer_node(state: dict) -> dict:
 
     return {
         "explanation": explanation,
-        "errors": state.get("errors", []) + errors,
+        "errors": errors,
     }

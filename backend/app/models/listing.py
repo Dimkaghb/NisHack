@@ -109,6 +109,28 @@ class SearchResponse(BaseModel):
     explanation: str = ""
 
 
+class SearchSessionCreated(BaseModel):
+    """Response for POST /api/v1/search (async mode)."""
+
+    session_id: str
+    status: str = "pending"
+    message: str = "Search started. Poll GET /api/v1/search/{session_id} for results."
+
+
+class SearchSessionStatus(BaseModel):
+    """Response for GET /api/v1/search/{session_id}."""
+
+    session_id: str
+    status: str  # pending | running | complete | failed
+    business_type: str
+    district: str | None = None
+    budget_tenge: int | None = None
+    total_evaluated: int = 0
+    explanation: str = ""
+    error_message: str | None = None
+    results: list[ScoredListingResponse] = []
+
+
 class ListingsResponse(BaseModel):
     """Response for GET /api/v1/listings."""
 
