@@ -48,6 +48,8 @@ async def create_search(request: SearchRequest) -> SearchSessionCreated:
     initial_state = {
         "search_id": session_id,
         "business_type": request.business_type.value,
+        "business_name": request.business_name,
+        "business_description": request.business_description,
         "city": "almaty",
         "district": request.district,
         "budget_tenge": request.budget_tenge,
@@ -55,7 +57,7 @@ async def create_search(request: SearchRequest) -> SearchSessionCreated:
         "competitor_tolerance": request.competitor_tolerance,
         "weights_override": None,
         # Planner outputs (populated by planner_node)
-        "search_plan": None,
+        "search_query": None,
         "planner_reasoning": "",
         # Fetcher output
         "raw_listings": [],

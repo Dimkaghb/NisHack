@@ -75,6 +75,8 @@ export function SearchForm() {
 
       const res = await postSearch({
         business_type: businessType,
+        business_name: null,
+        business_description: null,
         district: apiDistrict,
         budget_tenge: budgetTenge,
         area_sqm_min: areaSqmMin,

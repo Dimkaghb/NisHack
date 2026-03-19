@@ -111,7 +111,9 @@ async def explainer_node(state: dict) -> dict:
     t0 = time.monotonic()
     errors: list[str] = []
 
-    top = state.get("top_listings", []) or state.get("scored_listings", [])[:5]
+    # Explain the top validated listings (cap at 10 for LLM context)
+    top = state.get("top_listings", []) or state.get("scored_listings", [])
+    top = top[:10]
     if not top:
         errors.append("explainer_node: no listings to explain")
         return {
@@ -119,10 +121,19 @@ async def explainer_node(state: dict) -> dict:
             "errors": errors,
         }
 
+    # Enrich with business profile from search query
+    search_query = state.get("search_query") or {}
+    bp = search_query.get("business_profile", {})
+    business_label = state.get("business_type", "")
+    if bp.get("concept"):
+        business_label = f"{business_label} — {bp['concept']}"
+    if bp.get("name"):
+        business_label = f"«{bp['name']}» ({business_label})"
+
     try:
         explanation = await generate_explanation(
             top,
-            state.get("business_type", ""),
+            business_label,
             planner_reasoning=state.get("planner_reasoning", ""),
             validation_results=state.get("validation_results"),
         )

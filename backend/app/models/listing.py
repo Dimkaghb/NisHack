@@ -62,6 +62,8 @@ class SearchRequest(BaseModel):
     """Request body for POST /api/v1/search."""
 
     business_type: BusinessType
+    business_name: str | None = None
+    business_description: str | None = None
     district: str | None = None
     budget_tenge: int | None = Field(None, gt=0)
     area_sqm_min: int | None = Field(None, gt=0)

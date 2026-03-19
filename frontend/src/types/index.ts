@@ -48,6 +48,8 @@ export interface ScoredListing {
 
 export interface SearchRequest {
   business_type: BusinessType;
+  business_name: string | null;
+  business_description: string | null;
   district: string | null;
   budget_tenge: number | null;
   area_sqm_min: number | null;

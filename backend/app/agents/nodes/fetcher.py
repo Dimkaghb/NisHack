@@ -35,16 +35,24 @@ def _parse_floor_from_text(title: str | None, description: str | None) -> int | 
     return None
 
 
-def _apply_plan_filters(listings: list[dict], search_plan: dict) -> list[dict]:
-    """Apply SearchPlan property_filters to raw listings.
+def _apply_plan_filters(listings: list[dict], search_query: dict) -> list[dict]:
+    """Apply SearchQuery location_requirements to raw listings.
 
     Filters are intentionally lenient: listings with missing data are kept
     (they'll score poorly rather than being silently excluded).
     """
-    pf = search_plan.get("property_filters", {})
-    exclude_types: list[str] = [t.lower() for t in (pf.get("exclude_types") or [])]
-    prefer_floor: str | None = pf.get("prefer_floor")
-    area_range: list[int] | None = pf.get("area_range")
+    lr = search_query.get("location_requirements", {})
+    bp = search_query.get("business_profile", {})
+
+    # Derive exclude_types from business profile — office types excluded for non-office
+    exclude_types: list[str] = []
+    if bp.get("type") != "office":
+        exclude_types = ["office", "склад"]
+
+    prefer_floor: str | None = lr.get("floor")
+    area_min = lr.get("min_area_sqm")
+    area_max = lr.get("max_area_sqm")
+    area_range: list[int] | None = [area_min, area_max] if area_min and area_max else None
 
     filtered: list[dict] = []
     for listing in listings:
@@ -142,13 +150,13 @@ async def fetcher_node(state: PipelineState) -> dict:
                 if lst.get("area_sqm") is None or lst["area_sqm"] >= area_min
             ]
 
-        # Apply SearchPlan filters from planner node
-        search_plan = state.get("search_plan")
+        # Apply SearchQuery filters from planner node
+        search_query = state.get("search_query")
         before_plan = len(raw_listings)
-        if search_plan:
-            raw_listings = _apply_plan_filters(raw_listings, search_plan)
+        if search_query:
+            raw_listings = _apply_plan_filters(raw_listings, search_query)
             log.debug(
-                "fetcher_plan_filters_applied",
+                "fetcher_search_query_filters_applied",
                 before=before_plan,
                 after=len(raw_listings),
                 excluded=before_plan - len(raw_listings),
@@ -165,7 +173,7 @@ async def fetcher_node(state: PipelineState) -> dict:
         "fetcher_node_done",
         listings=len(raw_listings),
         district=state.get("district"),
-        has_plan=bool(state.get("search_plan")),
+        has_search_query=bool(state.get("search_query")),
         errors=len(errors),
         duration_ms=round((time.monotonic() - t0) * 1000),
     )

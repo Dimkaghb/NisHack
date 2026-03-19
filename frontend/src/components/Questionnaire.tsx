@@ -150,6 +150,8 @@ export function Questionnaire({ onBack }: QuestionnaireProps) {
     try {
       const res = await postSearch({
         business_type: businessType,
+        business_name: businessName.trim() || null,
+        business_description: businessDesc.trim() || null,
         district: apiDistrict,
         budget_tenge: budgetTenge,
         area_sqm_min: areaSqmMin,

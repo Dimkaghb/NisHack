@@ -15,6 +15,8 @@ class PipelineState(TypedDict):
     # --- Input params (set once at pipeline start) ---
     search_id: str
     business_type: str  # "fastfood" | "office" | "retail" | "cafe" | "pharmacy"
+    business_name: str | None
+    business_description: str | None
     city: str  # "almaty" — hardcoded for MVP
     district: str | None
     budget_tenge: int | None
@@ -22,8 +24,8 @@ class PipelineState(TypedDict):
     competitor_tolerance: int  # 0-10
     weights_override: dict | None
 
-    # --- Planner output ---
-    search_plan: dict | None           # SearchPlan from planner node
+    # --- Planner output: comprehensive AI-generated search query ---
+    search_query: dict | None          # SearchQuery from planner node
     planner_reasoning: str             # Human-readable reasoning about intent
 
     # --- Fetcher output ---

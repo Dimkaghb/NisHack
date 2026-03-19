@@ -82,11 +82,12 @@ class KrishaScraper(BaseScraper):
         )
         return all_listings
 
-    async def _fetch_type(self, type_id: int, type_name: str) -> list[dict]:
+    async def _fetch_type(
+        self, type_id: int, type_name: str, max_pages: int = 15
+    ) -> list[dict]:
         """Fetch listings for a specific commercial property type."""
         listings: list[dict] = []
         page = 1
-        max_pages = 15  # safety cap per type
 
         while page <= max_pages:
             params: dict[str, str | int] = {

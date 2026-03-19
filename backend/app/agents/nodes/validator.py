@@ -13,7 +13,7 @@ SYSTEM_PROMPT = """\
 Твоя задача: проверить, действительно ли каждое помещение подходит для указанного бизнеса.
 
 Ты получишь:
-1. Тип бизнеса
+1. Тип бизнеса и его описание
 2. Правила валидации от планировщика
 3. Список помещений с описаниями и баллами
 
@@ -66,6 +66,9 @@ VALIDATE_TOOL = types.Tool(
     ]
 )
 
+# Max listings to send to Gemini per validation batch
+_BATCH_SIZE = 15
+
 
 def _format_listings_for_validation(listings: list[dict]) -> str:
     """Format listings for the validator prompt."""
@@ -99,7 +102,7 @@ def _apply_validation_results(
     scored_listings: list[dict],
     decisions: list[dict],
 ) -> tuple[list[dict], list[dict]]:
-    """Apply validation decisions: filter rejected listings, adjust scores for penalized ones.
+    """Apply validation decisions: filter rejected, adjust penalized scores.
 
     Returns (validated_listings, validation_results).
     """
@@ -115,7 +118,6 @@ def _apply_validation_results(
         decision = decision_map.get(lid)
 
         if decision is None:
-            # No decision made — keep with neutral note
             validated.append(lst)
             validation_results.append({
                 "listing_id": lid,
@@ -140,7 +142,6 @@ def _apply_validation_results(
             log.debug("validator_rejected", listing_id=lid, reason=reason)
             continue
 
-        # Apply score adjustment for soft_penalize
         if adjustment != 0:
             lst = dict(lst)
             lst["total_score"] = max(0.0, lst.get("total_score", 0) + adjustment)
@@ -157,11 +158,11 @@ def _apply_validation_results(
 
 
 async def validator_node(state: PipelineState) -> dict:
-    """LangGraph node: post-scoring quality gate using Gemini 2.5 Pro.
+    """LangGraph node: post-scoring quality gate using Gemini.
 
-    Reviews top listings against planner validation rules, rejects semantic
-    mismatches (office on 4th floor for a cafe), applies score adjustments,
-    and re-ranks results.
+    Validates ALL scored listings in batches. Rejects semantic mismatches,
+    applies score adjustments, and re-ranks. Returns all validated listings
+    as top_listings (not limited to 5).
     """
     t0 = time.monotonic()
     errors: list[str] = []
@@ -174,43 +175,57 @@ async def validator_node(state: PipelineState) -> dict:
             "errors": [],
         }
 
-    # Validate top 10 (more than needed, so we have backup after rejections)
-    candidates = scored_listings[:10]
-
-    search_plan = state.get("search_plan") or {}
-    validation_rules: list[dict] = search_plan.get("validation_rules", [])
+    search_query = state.get("search_query") or {}
+    validation_rules: list[dict] = search_query.get("validation_rules", [])
     business_type = state.get("business_type", "")
 
+    # Enrich context with business profile
+    bp = search_query.get("business_profile", {})
+    business_context = business_type
+    if bp.get("concept"):
+        business_context = f"{business_type} ({bp['concept']})"
+
+    rules_text = _format_rules(validation_rules)
+
+    all_decisions: list[dict] = []
+
     try:
-        listings_text = _format_listings_for_validation(candidates)
-        rules_text = _format_rules(validation_rules)
+        # Validate in batches to handle many listings
+        for i in range(0, len(scored_listings), _BATCH_SIZE):
+            batch = scored_listings[i : i + _BATCH_SIZE]
 
-        user_message = (
-            f"Тип бизнеса: {business_type}\n\n"
-            f"Правила валидации:\n{rules_text}\n\n"
-            f"Помещения для проверки:\n\n{listings_text}\n\n"
-            "Вызови функцию validate_listings с решением для каждого помещения."
-        )
+            listings_text = _format_listings_for_validation(batch)
 
-        result = await call_gemini_with_tools(
-            system=SYSTEM_PROMPT,
-            user_message=user_message,
-            tools=[VALIDATE_TOOL],
-        )
+            user_message = (
+                f"Тип бизнеса: {business_context}\n\n"
+                f"Правила валидации:\n{rules_text}\n\n"
+                f"Помещения для проверки:\n\n{listings_text}\n\n"
+                "Вызови функцию validate_listings с решением для каждого помещения."
+            )
 
-        decisions: list[dict] = result.get("arguments", {}).get("decisions", [])
+            result = await call_gemini_with_tools(
+                system=SYSTEM_PROMPT,
+                user_message=user_message,
+                tools=[VALIDATE_TOOL],
+            )
 
-        validated, validation_results = _apply_validation_results(candidates, decisions)
+            decisions: list[dict] = result.get("arguments", {}).get("decisions", [])
+            all_decisions.extend(decisions)
 
-        # Top 5 after validation
-        top_listings = validated[:5]
+            log.debug(
+                "validator_batch_done",
+                batch_start=i,
+                batch_size=len(batch),
+                decisions=len(decisions),
+            )
+
+        validated, validation_results = _apply_validation_results(scored_listings, all_decisions)
 
         log.info(
             "validator_node_done",
-            candidates=len(candidates),
+            total_candidates=len(scored_listings),
             kept=len(validated),
-            rejected=len(candidates) - len(validated),
-            top=len(top_listings),
+            rejected=len(scored_listings) - len(validated),
             duration_ms=round((time.monotonic() - t0) * 1000),
         )
 
@@ -218,11 +233,11 @@ async def validator_node(state: PipelineState) -> dict:
         errors.append(f"validator_node: {e}")
         log.error("validator_node_failed", error=str(e))
         # Fallback: pass scored listings through unchanged
-        top_listings = scored_listings[:5]
+        validated = scored_listings
         validation_results = []
 
     return {
-        "top_listings": top_listings,
+        "top_listings": validated,
         "validation_results": validation_results,
         "errors": errors,
     }

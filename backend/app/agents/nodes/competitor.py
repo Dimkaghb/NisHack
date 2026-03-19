@@ -21,12 +21,12 @@ async def competitor_node(state: PipelineState) -> dict:
     t0 = time.monotonic()
     errors: list[str] = []
 
-    # Read enrichment hints from planner
-    search_plan = state.get("search_plan") or {}
-    hints = search_plan.get("enrichment_hints", {})
-    query_override: str | None = hints.get("competitor_query_override")
-    radius_override: int | None = hints.get("competitor_radius")
-    radius = radius_override or 500
+    # Read competitive context from search query
+    search_query = state.get("search_query") or {}
+    cc = search_query.get("competitive_context", {})
+    competitor_queries: list[str] = cc.get("competitor_search_queries", [])
+    query_override: str | None = " ".join(competitor_queries) if competitor_queries else None
+    radius = cc.get("competitor_radius_m") or 500
 
     from app.integrations.gis2 import TwoGISClient
 

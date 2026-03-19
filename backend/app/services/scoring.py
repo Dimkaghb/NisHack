@@ -280,7 +280,7 @@ def score_listings(
             "nearest_metro_name": item.get("nearest_metro_name"),
         })
 
-    # 4. Sort by total_score descending, return top N
+    # 4. Sort by total_score descending
     scored.sort(key=lambda x: x["total_score"], reverse=True)
 
     for rank, item in enumerate(scored, 1):
@@ -293,4 +293,7 @@ def score_listings(
         top_score=scored[0]["total_score"] if scored else 0,
     )
 
-    return scored[:top_n]
+    # Return top_n if specified, otherwise all scored listings
+    if top_n and top_n < len(scored):
+        return scored[:top_n]
+    return scored

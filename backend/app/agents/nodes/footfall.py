@@ -60,10 +60,10 @@ async def footfall_node(state: PipelineState) -> dict:
     errors: list[str] = []
     results: list[dict] = []
 
-    # Read anchor POI hints from planner
-    search_plan = state.get("search_plan") or {}
-    hints = search_plan.get("enrichment_hints", {})
-    anchor_pois: list[str] = hints.get("footfall_anchor_pois") or _DEFAULT_ANCHOR_POIS
+    # Read anchor POI hints from search query
+    search_query = state.get("search_query") or {}
+    scoring_hints = search_query.get("scoring_hints", {})
+    anchor_pois: list[str] = scoring_hints.get("footfall_anchor_pois") or _DEFAULT_ANCHOR_POIS
 
     # Separate listings with/without coordinates
     with_coords = [
