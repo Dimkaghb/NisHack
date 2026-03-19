@@ -156,6 +156,72 @@ def create_app() -> FastAPI:
             "enriched_listings": result.data or [],
         }
 
+    @app.get(
+        "/api/v1/dev/score",
+        status_code=200,
+        tags=["dev"],
+        summary="Score enriched listings for a business type",
+    )
+    async def dev_score(
+        business_type: str = "fastfood",
+        budget_tenge: int | None = None,
+        competitor_tolerance: int = 5,
+        top_n: int = 5,
+    ) -> dict:
+        """Run the scoring engine on enriched listings and return ranked results."""
+        from app.db.client import get_db
+        from app.services.scoring import score_listings
+
+        db = await get_db()
+
+        # Fetch enriched listings joined with their listing data
+        result = (
+            await db.table("enriched_listings")
+            .select("*, listings(*)")
+            .execute()
+        )
+        rows = result.data or []
+
+        if not rows:
+            return {"message": "No enriched listings found. Run /dev/enrich first.", "results": []}
+
+        # Flatten joined data for the scoring engine
+        flat: list[dict] = []
+        for row in rows:
+            listing = row.get("listings", {}) or {}
+            flat.append({
+                "id": listing.get("id") or row.get("listing_id"),
+                "title": listing.get("title", ""),
+                "address": listing.get("address", ""),
+                "district": listing.get("district"),
+                "price_tenge": listing.get("price_tenge"),
+                "area_sqm": listing.get("area_sqm"),
+                "url": listing.get("url", ""),
+                "lat": listing.get("lat"),
+                "lng": listing.get("lng"),
+                "footfall_raw": row.get("footfall_raw", 50),
+                "competitor_count": row.get("competitor_count", 0),
+                "bus_stops_nearby": row.get("bus_stops_nearby", 0),
+                "metro_distance_m": row.get("metro_distance_m"),
+                "nearest_metro_name": row.get("nearest_metro_name"),
+            })
+
+        scored = score_listings(
+            flat,
+            business_type=business_type,
+            budget_tenge=budget_tenge,
+            competitor_tolerance=competitor_tolerance,
+            top_n=top_n,
+        )
+
+        return {
+            "business_type": business_type,
+            "budget_tenge": budget_tenge,
+            "competitor_tolerance": competitor_tolerance,
+            "total_evaluated": len(flat),
+            "top_results": scored,
+        }
+
     return app
 
 

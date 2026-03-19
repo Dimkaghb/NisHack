@@ -48,3 +48,33 @@ body {
 .logos-ticker-track:hover {
   animation-play-state: paused;
 }
+
+/* Integrations tickers — two rows, opposite directions */
+@keyframes integrations-left {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+@keyframes integrations-right {
+  from { transform: translateX(-50%); }
+  to   { transform: translateX(0); }
+}
+
+.integrations-ticker-left {
+  animation: integrations-left 18s linear infinite;
+}
+.integrations-ticker-right {
+  animation: integrations-right 22s linear infinite;
+}
+
+/* Reviews ticker */
+@keyframes reviews-marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.reviews-ticker-track {
+  animation: reviews-marquee 40s linear infinite;
+  width: max-content;
+}
+.reviews-ticker-track:hover {
+  animation-play-state: paused;
+}

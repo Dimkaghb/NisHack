@@ -3,6 +3,8 @@ import { Hero } from "./components/Hero";
 import { LogosTicker } from "./components/LogosTicker";
 import { AboutApp } from "./components/AboutApp";
 import { Features } from "./components/Features";
+import { Benefits } from "./components/Benefits";
+import { Reviews } from "./components/Reviews";
 
 /* Matches Framer Content wrapper: gap=160px between sections, pb=160px */
 export function LandingPage() {
@@ -22,6 +24,8 @@ export function LandingPage() {
         <LogosTicker />
         <AboutApp />
         <Features />
+        <Benefits />
+        <Reviews />
       </div>
     </main>
   );
