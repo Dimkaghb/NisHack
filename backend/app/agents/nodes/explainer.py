@@ -1,14 +1,10 @@
 import time
 
 import structlog
-from google import genai
-from google.genai import types
 
-from app.config import settings
+from app.services.llm import call_gemini
 
 log = structlog.get_logger()
-
-client = genai.Client(api_key=settings.gemini_api_key)
 
 SYSTEM_PROMPT = (
     "Ты — эксперт по коммерческой недвижимости в Алматы. "
@@ -18,7 +14,10 @@ SYSTEM_PROMPT = (
     "Используй конкретные цифры из предоставленных данных: "
     "баллы трафика, количество конкурентов, близость транспорта, цену. "
     "Формат: для каждой локации — 2-3 предложения с ключевыми аргументами. "
-    "Цены указывай в тенге с символом ₸."
+    "Цены указывай в тенге с символом ₸. "
+    "Ссылайся на конкретные улицы, районы и ориентиры Алматы. "
+    "Объясняй в бизнес-терминах: проходимость = потенциальные клиенты, "
+    "близость метро = удобство для сотрудников, мало конкурентов = свободная ниша."
 )
 
 
@@ -49,27 +48,45 @@ def _format_listings_for_prompt(listings: list[dict], business_type: str) -> str
 async def generate_explanation(
     scored_listings: list[dict],
     business_type: str,
+    planner_reasoning: str = "",
+    validation_results: list[dict] | None = None,
 ) -> str:
-    """Generate a Russian explanation for the top scored listings using Gemini."""
+    """Generate a Russian explanation for the top scored listings using Gemini 2.5 Pro."""
     t0 = time.monotonic()
 
     formatted = _format_listings_for_prompt(scored_listings, business_type)
-    user_prompt = (
-        f"Вот топ-{len(scored_listings)} локаций для бизнеса типа «{business_type}» в Алматы.\n"
-        f"Объясни для каждой, почему она подходит, используя конкретные цифры из данных.\n\n"
-        f"{formatted}"
-    )
+
+    # Build enriched prompt with planner context
+    parts: list[str] = [
+        f"Вот топ-{len(scored_listings)} локаций для бизнеса типа «{business_type}» в Алматы.",
+        "Объясни для каждой, почему она подходит, используя конкретные цифры из данных.",
+    ]
+
+    if planner_reasoning:
+        parts.append(
+            f"\nКонтекст от планировщика (что важно для этого типа бизнеса):\n{planner_reasoning}"
+        )
+
+    if validation_results:
+        kept = [v for v in validation_results if v.get("decision") == "keep"]
+        if kept:
+            notes = "\n".join(
+                f"- {v.get('listing_id', '?')}: {v.get('reason', '')}" for v in kept
+            )
+            parts.append(f"\nЗаметки валидатора:\n{notes}")
+
+    parts.append(f"\n{formatted}")
+    user_prompt = "\n".join(parts)
+
+    system = SYSTEM_PROMPT
+    if planner_reasoning:
+        system += (
+            " Используй контекст планировщика, чтобы объяснить в бизнес-терминах, "
+            "почему каждая локация подходит именно для данного типа бизнеса."
+        )
 
     try:
-        response = await client.aio.models.generate_content(
-            model="gemini-2.0-flash",
-            contents=user_prompt,
-            config=types.GenerateContentConfig(
-                system_instruction=SYSTEM_PROMPT,
-                max_output_tokens=1500,
-            ),
-        )
-        explanation = response.text or ""
+        explanation = await call_gemini(system=system, user_message=user_prompt)
     except Exception as e:
         log.error("explainer_failed", error=str(e))
         explanation = "Не удалось сгенерировать объяснение. Попробуйте позже."
@@ -103,7 +120,12 @@ async def explainer_node(state: dict) -> dict:
         }
 
     try:
-        explanation = await generate_explanation(top, state.get("business_type", ""))
+        explanation = await generate_explanation(
+            top,
+            state.get("business_type", ""),
+            planner_reasoning=state.get("planner_reasoning", ""),
+            validation_results=state.get("validation_results"),
+        )
     except Exception as e:
         errors.append(f"explainer_node: {e}")
         explanation = "Не удалось сгенерировать объяснение."

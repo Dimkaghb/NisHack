@@ -5,8 +5,10 @@ from app.agents.nodes.competitor import competitor_node
 from app.agents.nodes.explainer import explainer_node
 from app.agents.nodes.fetcher import fetcher_node
 from app.agents.nodes.footfall import footfall_node
+from app.agents.nodes.planner import planner_node
 from app.agents.nodes.scoring import scoring_node
 from app.agents.nodes.transit import transit_node
+from app.agents.nodes.validator import validator_node
 from app.agents.state import PipelineState
 
 
@@ -22,20 +24,24 @@ def route_enrichment(state: PipelineState) -> list[Send]:
 def build_graph() -> object:
     """Build and compile the LangGraph search pipeline.
 
-    Flow: fetcher → [footfall, competitor, transit] (parallel) → scoring → explainer
+    Flow: planner → fetcher → [footfall, competitor, transit] (parallel)
+          → scoring → validator → explainer
     """
     graph = StateGraph(PipelineState)
 
     # Add all nodes
+    graph.add_node("planner", planner_node)
     graph.add_node("fetcher", fetcher_node)
     graph.add_node("footfall", footfall_node)
     graph.add_node("competitor", competitor_node)
     graph.add_node("transit", transit_node)
     graph.add_node("scoring", scoring_node)
+    graph.add_node("validator", validator_node)
     graph.add_node("explainer", explainer_node)
 
-    # Entry: START → fetcher
-    graph.add_edge(START, "fetcher")
+    # Entry: START → planner → fetcher
+    graph.add_edge(START, "planner")
+    graph.add_edge("planner", "fetcher")
 
     # Fetcher fans out to 3 enrichment nodes in parallel
     graph.add_conditional_edges(
@@ -49,8 +55,9 @@ def build_graph() -> object:
     graph.add_edge("competitor", "scoring")
     graph.add_edge("transit", "scoring")
 
-    # Scoring → explainer → END
-    graph.add_edge("scoring", "explainer")
+    # Scoring → validator → explainer → END
+    graph.add_edge("scoring", "validator")
+    graph.add_edge("validator", "explainer")
     graph.add_edge("explainer", END)
 
     return graph.compile()

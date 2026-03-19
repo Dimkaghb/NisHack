@@ -54,12 +54,21 @@ async def create_search(request: SearchRequest) -> SearchSessionCreated:
         "area_sqm_min": request.area_sqm_min,
         "competitor_tolerance": request.competitor_tolerance,
         "weights_override": None,
+        # Planner outputs (populated by planner_node)
+        "search_plan": None,
+        "planner_reasoning": "",
+        # Fetcher output
         "raw_listings": [],
+        # Enrichment outputs
         "footfall_results": [],
         "competitor_results": [],
         "transit_results": [],
+        # Scoring output
         "scored_listings": [],
         "top_listings": [],
+        # Validator output
+        "validation_results": [],
+        # Explainer output
         "explanation": "",
         "errors": [],
     }

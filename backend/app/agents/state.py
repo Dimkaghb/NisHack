@@ -22,6 +22,10 @@ class PipelineState(TypedDict):
     competitor_tolerance: int  # 0-10
     weights_override: dict | None
 
+    # --- Planner output ---
+    search_plan: dict | None           # SearchPlan from planner node
+    planner_reasoning: str             # Human-readable reasoning about intent
+
     # --- Fetcher output ---
     raw_listings: list[dict]
 
@@ -33,6 +37,9 @@ class PipelineState(TypedDict):
     # --- Scoring output ---
     scored_listings: list[dict]
     top_listings: list[dict]
+
+    # --- Validator output ---
+    validation_results: list[dict]     # Per-listing keep/reject decisions
 
     # --- Explainer output ---
     explanation: str

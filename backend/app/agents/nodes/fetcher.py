@@ -10,6 +10,9 @@ log = structlog.get_logger()
 # Pattern to extract area from title like "· 106 м²"
 _AREA_RE = re.compile(r"(\d+(?:[.,]\d+)?)\s*м²")
 
+# Pattern to extract floor number from title/description like "4 этаж", "4-й этаж"
+_FLOOR_RE = re.compile(r"(\d+)[\s-]*й?\s*этаж", re.IGNORECASE)
+
 
 def _parse_area_from_title(title: str | None) -> float | None:
     """Extract area in sqm from listing title if not already set."""
@@ -21,10 +24,93 @@ def _parse_area_from_title(title: str | None) -> float | None:
     return None
 
 
+def _parse_floor_from_text(title: str | None, description: str | None) -> int | None:
+    """Extract floor number from listing title or description."""
+    for text in (title, description):
+        if not text:
+            continue
+        m = _FLOOR_RE.search(text)
+        if m:
+            return int(m.group(1))
+    return None
+
+
+def _apply_plan_filters(listings: list[dict], search_plan: dict) -> list[dict]:
+    """Apply SearchPlan property_filters to raw listings.
+
+    Filters are intentionally lenient: listings with missing data are kept
+    (they'll score poorly rather than being silently excluded).
+    """
+    pf = search_plan.get("property_filters", {})
+    exclude_types: list[str] = [t.lower() for t in (pf.get("exclude_types") or [])]
+    prefer_floor: str | None = pf.get("prefer_floor")
+    area_range: list[int] | None = pf.get("area_range")
+
+    filtered: list[dict] = []
+    for listing in listings:
+        # --- Property type exclusion (hard filter) ---
+        prop_type = (listing.get("property_type") or "").lower()
+        title_lower = (listing.get("title") or "").lower()
+
+        if exclude_types and prop_type:
+            if any(ex in prop_type for ex in exclude_types):
+                log.debug(
+                    "fetcher_excluded_type",
+                    listing_id=listing.get("id"),
+                    property_type=prop_type,
+                )
+                continue
+
+        # --- Floor filter (hard filter for prefer_floor='ground') ---
+        if prefer_floor == "ground":
+            floor = listing.get("floor") or _parse_floor_from_text(
+                listing.get("title"), listing.get("description")
+            )
+            if floor is not None and floor > 1:
+                # Check if title suggests ground floor explicitly
+                if "1 этаж" not in title_lower and "первый этаж" not in title_lower:
+                    log.debug(
+                        "fetcher_excluded_floor",
+                        listing_id=listing.get("id"),
+                        floor=floor,
+                    )
+                    continue
+        elif prefer_floor == "low":
+            floor = listing.get("floor") or _parse_floor_from_text(
+                listing.get("title"), listing.get("description")
+            )
+            if floor is not None and floor > 3:
+                log.debug(
+                    "fetcher_excluded_floor_low",
+                    listing_id=listing.get("id"),
+                    floor=floor,
+                )
+                continue
+
+        # --- Area range filter (soft: keep if area unknown) ---
+        if area_range and len(area_range) == 2:
+            area = listing.get("area_sqm")
+            if area is not None:
+                if area < area_range[0] * 0.5 or area > area_range[1] * 2.0:
+                    # Only exclude if severely outside range (2× tolerance)
+                    log.debug(
+                        "fetcher_excluded_area",
+                        listing_id=listing.get("id"),
+                        area=area,
+                        range=area_range,
+                    )
+                    continue
+
+        filtered.append(listing)
+
+    return filtered
+
+
 async def fetcher_node(state: PipelineState) -> dict:
     """Fetch listings from the DB that match the search criteria.
 
     Reads from the `listings` table (already populated by the scraper).
+    Applies SearchPlan filters if a planner ran before this node.
     Returns raw_listings for downstream enrichment nodes.
     """
     t0 = time.monotonic()
@@ -40,22 +126,33 @@ async def fetcher_node(state: PipelineState) -> dict:
             query = query.eq("district", state["district"])
 
         # Budget is a soft preference handled by scoring — not a hard filter.
-        # Limit to 50 — enrichment APIs are the bottleneck.
         result = await query.limit(200).execute()
         raw_listings = result.data or []
 
-        # Post-process: parse area_sqm from title if missing, apply area filter
+        # Post-process: parse area_sqm from title if missing
         for listing in raw_listings:
             if listing.get("area_sqm") is None:
                 listing["area_sqm"] = _parse_area_from_title(listing.get("title"))
 
-        # Soft area filter — keep listings with no area data too
+        # User-specified area minimum (soft — keep listings with no area data)
         area_min = state.get("area_sqm_min")
         if area_min:
             raw_listings = [
-                l for l in raw_listings
-                if l.get("area_sqm") is None or l["area_sqm"] >= area_min
+                lst for lst in raw_listings
+                if lst.get("area_sqm") is None or lst["area_sqm"] >= area_min
             ]
+
+        # Apply SearchPlan filters from planner node
+        search_plan = state.get("search_plan")
+        before_plan = len(raw_listings)
+        if search_plan:
+            raw_listings = _apply_plan_filters(raw_listings, search_plan)
+            log.debug(
+                "fetcher_plan_filters_applied",
+                before=before_plan,
+                after=len(raw_listings),
+                excluded=before_plan - len(raw_listings),
+            )
 
         # Cap at 50 for enrichment speed
         raw_listings = raw_listings[:50]
@@ -68,6 +165,7 @@ async def fetcher_node(state: PipelineState) -> dict:
         "fetcher_node_done",
         listings=len(raw_listings),
         district=state.get("district"),
+        has_plan=bool(state.get("search_plan")),
         errors=len(errors),
         duration_ms=round((time.monotonic() - t0) * 1000),
     )
