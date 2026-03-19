@@ -7,61 +7,6 @@ import { ResultsGrid } from "@/components/ResultsGrid";
 import { useLocationIQStore } from "@/store/useLocationIQStore";
 import { useSearchPolling } from "@/hooks/useSearchPolling";
 
-// ─── Header ───────────────────────────────────────────────────────────────
-
-function Header() {
-  const appState = useLocationIQStore((s) => s.appState);
-  const resetSearch = useLocationIQStore((s) => s.resetSearch);
-
-  const isResults =
-    appState === "results" || appState === "detail" || appState === "contact";
-
-  return (
-    <header
-      className="flex-shrink-0 flex items-center justify-between px-5"
-      style={{
-        height: 48,
-        backgroundColor: "rgba(255,255,255,0.85)",
-        backdropFilter: "blur(12px)",
-        borderBottom: "1px solid var(--stroke)",
-        position: "sticky",
-        top: 0,
-        zIndex: 200,
-      }}
-    >
-      <button
-        type="button"
-        onClick={isResults ? resetSearch : undefined}
-        className="font-bold tracking-tight"
-        style={{
-          fontSize: 18,
-          color: "var(--neutral-30)",
-          letterSpacing: "-0.03em",
-          background: "none",
-          border: "none",
-          cursor: isResults ? "pointer" : "default",
-          padding: 0,
-        }}
-      >
-        Location<span style={{ color: "var(--accent-blue)" }}>IQ</span>
-      </button>
-
-      <div
-        className="flex items-center justify-center rounded-full font-semibold"
-        style={{
-          width: 32,
-          height: 32,
-          backgroundColor: "var(--beige-10)",
-          fontSize: 13,
-          color: "var(--neutral-20)",
-          border: "1.5px solid var(--stroke)",
-        }}
-      >
-        А
-      </div>
-    </header>
-  );
-}
 
 // ─── Loading screen ───────────────────────────────────────────────────────
 
@@ -156,7 +101,6 @@ export default function AppPage() {
       `}</style>
 
       <div className="flex flex-col" style={{ minHeight: "100dvh" }}>
-        <Header />
 
         {/* Idle — hero CTA */}
         {appState === "idle" && (
