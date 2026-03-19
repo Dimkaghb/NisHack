@@ -30,3 +30,21 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+@keyframes logos-marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.logos-ticker-track {
+  animation: logos-marquee 20s linear infinite;
+  width: max-content;
+}
+
+.logos-ticker-track:hover {
+  animation-play-state: paused;
+}
