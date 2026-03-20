@@ -88,7 +88,7 @@ const block1 = {
   heading: "Локации, где ваш бизнес будет на виду",
   body: "Aimaq оценивает пешеходный трафик, конкурентов и транспортную доступность — и формирует рейтинг мест под ваш формат.",
   imageBg: "https://framerusercontent.com/images/g690a9Fxc6Y5G69sPCSKq4vjw.png",
-  illustration: "https://framerusercontent.com/images/gUEFVWinvZ7dMZa0mUhNZWHNj3U.png",
+  illustration: "/feature-popular.png",
   pills: [
     { label: "Трафик", icon: <BarChartIcon /> },
     { label: "Конкуренты", icon: <TrendingUpIcon /> },
@@ -103,7 +103,7 @@ const block2 = {
   heading: "Понятные рекомендации вместо случайного поиска",
   body: "Каждая локация получает объяснение с цифрами: ожидаемый поток, ближайшие конкуренты и доступность транспорта. Вы принимаете решение быстрее.",
   imageBg: "https://framerusercontent.com/images/g690a9Fxc6Y5G69sPCSKq4vjw.png",
-  illustration: "https://framerusercontent.com/images/thBhwyY3D4d8TRQEbrMU6zSvz8.png",
+  illustration: "/feature-listings.png",
   pills: [
     { label: "Трафик", icon: <BarChartIcon /> },
     { label: "Цена аренды", icon: <WalletIcon /> },

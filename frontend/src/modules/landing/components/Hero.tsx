@@ -110,7 +110,7 @@ export function Hero() {
           style={{ borderRadius: 20, aspectRatio: "1.531", maxWidth: 1072 }}
         >
           <Image
-            src="https://framerusercontent.com/images/JeI7uULY0av9DxD7q7NVLTuoNc.png"
+            src="/hero-dashboard.png"
             alt="Скрин Aimaq — подбор локаций и рейтинг под ваш бизнес"
             fill
             priority
