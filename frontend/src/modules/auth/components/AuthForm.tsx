@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
@@ -14,9 +14,15 @@ export function AuthForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
 
   async function handleGoogleLogin() {
+    if (!supabase) {
+      setError(
+        "Сервер не настроен: задайте NEXT_PUBLIC_SUPABASE_URL и NEXT_PUBLIC_SUPABASE_ANON_KEY (например в Vercel → Environment Variables)."
+      );
+      return;
+    }
     setLoading(true);
     setError(null);
     const { error } = await supabase.auth.signInWithOAuth({
@@ -32,6 +38,12 @@ export function AuthForm() {
   }
 
   async function handleLogin(formData: FormData) {
+    if (!supabase) {
+      setError(
+        "Сервер не настроен: задайте NEXT_PUBLIC_SUPABASE_URL и NEXT_PUBLIC_SUPABASE_ANON_KEY."
+      );
+      return;
+    }
     setLoading(true);
     setError(null);
     const email = formData.get("email") as string;
@@ -52,6 +64,12 @@ export function AuthForm() {
   }
 
   async function handleSignup(formData: FormData) {
+    if (!supabase) {
+      setError(
+        "Сервер не настроен: задайте NEXT_PUBLIC_SUPABASE_URL и NEXT_PUBLIC_SUPABASE_ANON_KEY."
+      );
+      return;
+    }
     setLoading(true);
     setError(null);
     const name = formData.get("name") as string;
@@ -133,7 +151,7 @@ export function AuthForm() {
           </TogglePill>
         </div>
 
-        <GoogleButton onClick={handleGoogleLogin} disabled={loading} />
+        <GoogleButton onClick={handleGoogleLogin} disabled={loading || !supabase} />
 
         <div className="flex items-center" style={{ gap: 12 }}>
           <div className="flex-1 h-px" style={{ backgroundColor: "var(--stroke)" }} />
@@ -155,9 +173,9 @@ export function AuthForm() {
             exit={{ opacity: 0, y: -6, transition: { duration: 0.15 } }}
           >
             {mode === "login" ? (
-              <LoginFields onSubmit={handleLogin} loading={loading} />
+              <LoginFields onSubmit={handleLogin} loading={loading} disabled={!supabase} />
             ) : (
-              <SignupFields onSubmit={handleSignup} loading={loading} />
+              <SignupFields onSubmit={handleSignup} loading={loading} disabled={!supabase} />
             )}
           </motion.div>
         </AnimatePresence>
@@ -227,7 +245,15 @@ function inputClassName() {
   return "w-full px-4 py-3.5 rounded-2xl text-[16px] leading-[150%] outline-none transition-shadow focus-visible:ring-2 focus-visible:ring-[var(--blue-30)] focus-visible:ring-offset-2 focus-visible:ring-offset-transparent";
 }
 
-function LoginFields({ onSubmit, loading }: { onSubmit: (fd: FormData) => void; loading: boolean }) {
+function LoginFields({
+  onSubmit,
+  loading,
+  disabled,
+}: {
+  onSubmit: (fd: FormData) => void;
+  loading: boolean;
+  disabled?: boolean;
+}) {
   return (
     <form
       className="flex flex-col"
@@ -273,7 +299,7 @@ function LoginFields({ onSubmit, loading }: { onSubmit: (fd: FormData) => void; 
       </Field>
       <button
         type="submit"
-        disabled={loading}
+        disabled={loading || disabled}
         className="w-full font-semibold text-[16px] text-white transition-opacity hover:opacity-85 disabled:opacity-50 mt-1"
         style={{ backgroundColor: "var(--neutral-30)", borderRadius: 100, padding: "18px 24px" }}
       >
@@ -283,7 +309,15 @@ function LoginFields({ onSubmit, loading }: { onSubmit: (fd: FormData) => void; 
   );
 }
 
-function SignupFields({ onSubmit, loading }: { onSubmit: (fd: FormData) => void; loading: boolean }) {
+function SignupFields({
+  onSubmit,
+  loading,
+  disabled,
+}: {
+  onSubmit: (fd: FormData) => void;
+  loading: boolean;
+  disabled?: boolean;
+}) {
   return (
     <form
       className="flex flex-col"
@@ -361,7 +395,7 @@ function SignupFields({ onSubmit, loading }: { onSubmit: (fd: FormData) => void;
       </Field>
       <button
         type="submit"
-        disabled={loading}
+        disabled={loading || disabled}
         className="w-full font-semibold text-[16px] text-white transition-opacity hover:opacity-85 disabled:opacity-50 mt-1"
         style={{ backgroundColor: "var(--neutral-30)", borderRadius: 100, padding: "18px 24px" }}
       >
