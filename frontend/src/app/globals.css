@@ -109,3 +109,8 @@ body {
     transparent 100%
   );
 }
+
+/* Next.js injects this only in dev; production has no nextjs-portal in the DOM. */
+nextjs-portal {
+  display: none !important;
+}

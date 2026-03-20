@@ -46,7 +46,7 @@ export function Navbar() {
 
           {/* CTA */}
           <Link
-            href="/contact-us"
+            href="/auth"
             className="inline-flex items-center px-6 py-[14px] rounded-full text-[15px] font-semibold text-white transition-opacity duration-150 hover:opacity-85 shrink-0"
             style={{ backgroundColor: "var(--neutral-30)" }}
           >
@@ -87,7 +87,7 @@ export function Navbar() {
               </Link>
             ))}
             <Link
-              href="/contact-us"
+              href="/auth"
               onClick={() => setMobileOpen(false)}
               className="mt-2 inline-flex justify-center items-center px-6 py-3 rounded-full text-[15px] font-semibold text-white"
               style={{ backgroundColor: "var(--neutral-30)" }}

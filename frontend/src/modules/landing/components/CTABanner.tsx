@@ -81,7 +81,7 @@ export function CTABanner() {
 
         {/* Primary CTA button — Neutral30 bg, white text, radius=100px, padding=18 24 */}
         <Link
-          href="/contact-us"
+          href="/auth"
           className="inline-flex items-center font-semibold text-[16px] leading-[1.2] text-white transition-opacity hover:opacity-85"
           style={{
             padding: "18px 28px",

@@ -86,7 +86,7 @@ export function Hero() {
             style={{ gap: 8 }}
           >
             <Link
-              href="/contact-us"
+              href="/auth"
               className="inline-flex items-center font-semibold text-[16px] leading-[1.2] text-white transition-opacity hover:opacity-85"
               style={{ padding: "18px 24px", borderRadius: "100px", backgroundColor: "var(--neutral-30)" }}
             >

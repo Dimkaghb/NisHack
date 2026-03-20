@@ -191,7 +191,7 @@ function TextColumn({
           </p>
         </div>
         <Link
-          href="/contact-us"
+          href="/auth"
           className="inline-flex items-center self-start px-6 py-[18px] rounded-full font-semibold text-white text-[16px] leading-[1.2] transition-opacity duration-150 hover:opacity-85"
           style={{ backgroundColor: "var(--neutral-30)" }}
         >

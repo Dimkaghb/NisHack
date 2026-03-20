@@ -11,6 +11,7 @@
    CTA labels: "Try Freelio free" | "Get started" (dark pill) | "Contact sales"
    Tabs component: pill tabs, active=white elevated, inactive=transparent */
 
+import Link from "next/link";
 import { useState } from "react";
 import { LogosTicker } from "./LogosTicker";
 import { FadeUp, StaggerGroup, StaggerItem } from "./motion";
@@ -111,6 +112,7 @@ function DefaultCard({
   desc,
   features,
   cta,
+  ctaHref,
 }: {
   label: string;
   name: string;
@@ -118,6 +120,7 @@ function DefaultCard({
   desc: string;
   features: string[];
   cta: string;
+  ctaHref: string;
 }) {
   return (
     <div
@@ -165,8 +168,9 @@ function DefaultCard({
       </ul>
 
       {/* CTA — secondary style */}
-      <button
-        className="w-full font-semibold text-[15px] leading-[1.2] transition-colors hover:bg-black/5"
+      <Link
+        href={ctaHref}
+        className="w-full font-semibold text-[15px] leading-[1.2] transition-colors hover:bg-black/5 inline-flex items-center justify-center text-center"
         style={{
           padding: "16px 24px",
           borderRadius: 100,
@@ -176,7 +180,7 @@ function DefaultCard({
         }}
       >
         {cta}
-      </button>
+      </Link>
     </div>
   );
 }
@@ -257,8 +261,9 @@ function HighlightedCard({
       </ul>
 
       {/* CTA — primary dark pill */}
-      <button
-        className="w-full font-semibold text-[15px] text-white leading-[1.2] transition-opacity hover:opacity-85"
+      <Link
+        href="/auth"
+        className="w-full font-semibold text-[15px] text-white leading-[1.2] transition-opacity hover:opacity-85 inline-flex items-center justify-center text-center"
         style={{
           padding: "16px 24px",
           borderRadius: 100,
@@ -267,7 +272,7 @@ function HighlightedCard({
         }}
       >
         Начать
-      </button>
+      </Link>
     </div>
   );
 }
@@ -310,6 +315,7 @@ export function Pricing() {
             desc="Для первого подбора локаций: быстрый рейтинг и понятные пояснения."
             features={BASIC_FEATURES}
             cta="Начать подбор"
+            ctaHref="/auth"
           />
         </StaggerItem>
 
@@ -325,6 +331,7 @@ export function Pricing() {
             desc="Для бизнеса с несколькими точками и расширенными подборками."
             features={ENTERPRISE_FEATURES}
             cta="Запросить условия"
+            ctaHref="/contact-us"
           />
         </StaggerItem>
       </StaggerGroup>
