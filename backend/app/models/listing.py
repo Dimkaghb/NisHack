@@ -123,13 +123,14 @@ class SearchSessionStatus(BaseModel):
     """Response for GET /api/v1/search/{session_id}."""
 
     session_id: str
-    status: str  # pending | running | complete | failed
+    status: str  # pending | planning | fetching | enriching | scoring | validating | explaining | complete | failed
     business_type: str
     district: str | None = None
     budget_tenge: int | None = None
     total_evaluated: int = 0
     explanation: str = ""
     error_message: str | None = None
+    status_meta: dict | None = None
     results: list[ScoredListingResponse] = []
 
 

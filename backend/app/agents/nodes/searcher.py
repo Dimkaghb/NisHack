@@ -113,9 +113,20 @@ def _apply_search_query_filters(listings: list[dict], search_query: dict) -> lis
     return filtered
 
 
+# Russian labels for Krisha property types
+_TYPE_LABELS: dict[int, str] = {
+    1: "Свободное назначение",
+    2: "Офисы",
+    3: "Магазины",
+    6: "Общепит",
+    11: "Медцентры / аптеки",
+}
+
+
 async def _scrape_on_demand(
     business_type: str,
     district: str | None,
+    search_id: str | None = None,
     max_pages: int = MAX_PAGES_PER_TYPE,
 ) -> list[dict]:
     """On-demand scrape of Krisha.kz for relevant property types."""
@@ -125,11 +136,30 @@ async def _scrape_on_demand(
     scraper = KrishaScraper()
     all_listings: list[dict] = []
 
-    for type_id in type_ids:
+    # Build sources list for progress tracking
+    sources = [
+        {"id": f"krisha_{tid}", "label": f"Krisha.kz — {_TYPE_LABELS.get(tid, 'Тип ' + str(tid))}", "status": "pending", "count": 0}
+        for tid in type_ids
+    ] + [
+        {"id": "database", "label": "База данных", "status": "pending", "count": 0}
+    ]
+
+    for idx, type_id in enumerate(type_ids):
         type_name = PROPERTY_TYPE_MAP.get(type_id, "free")
+        sources[idx]["status"] = "active"
+
+        # Push sub-step to DB
+        if search_id:
+            try:
+                await update_pipeline_step(search_id, "fetching", {"sources": sources})
+            except Exception:
+                pass
+
         try:
             listings = await scraper._fetch_type(type_id, type_name, max_pages=max_pages)
             all_listings.extend(listings)
+            sources[idx]["status"] = "done"
+            sources[idx]["count"] = len(listings)
             log.info(
                 "searcher_scraped_type",
                 type_id=type_id,
@@ -137,6 +167,7 @@ async def _scrape_on_demand(
                 count=len(listings),
             )
         except Exception as e:
+            sources[idx]["status"] = "error"
             log.error(
                 "searcher_scrape_type_failed",
                 type_id=type_id,
@@ -144,7 +175,7 @@ async def _scrape_on_demand(
                 error=str(e),
             )
 
-    return all_listings
+    return all_listings, sources
 
 
 async def _fetch_coordinates(listings: list[dict], max_fetches: int = MAX_COORD_FETCHES) -> None:
@@ -223,8 +254,9 @@ async def searcher_node(state: PipelineState) -> dict:
 
     Returns all matching listings that pass filters.
     """
+    search_id = state["search_id"]
     try:
-        await update_pipeline_step(state["search_id"], "fetching")
+        await update_pipeline_step(search_id, "fetching")
     except Exception:
         pass
     t0 = time.monotonic()
@@ -233,10 +265,13 @@ async def searcher_node(state: PipelineState) -> dict:
     district = state.get("district")
     search_query = state.get("search_query") or {}
 
-    # --- Step 1: On-demand scrape from Krisha ---
+    # --- Step 1: On-demand scrape from Krisha (pushes sub-step progress) ---
     scraped_listings: list[dict] = []
+    sources: list[dict] = []
     try:
-        scraped_listings = await _scrape_on_demand(business_type, district)
+        scraped_listings, sources = await _scrape_on_demand(
+            business_type, district, search_id=search_id,
+        )
         log.info("searcher_scrape_done", count=len(scraped_listings))
     except Exception as e:
         errors.append(f"searcher_node: scrape failed — {e}")
@@ -244,6 +279,15 @@ async def searcher_node(state: PipelineState) -> dict:
 
     # --- Step 2: Read existing DB listings as baseline ---
     db_listings: list[dict] = []
+    # Mark database source as active
+    db_source = next((s for s in sources if s["id"] == "database"), None)
+    if db_source:
+        db_source["status"] = "active"
+        try:
+            await update_pipeline_step(search_id, "fetching", {"sources": sources})
+        except Exception:
+            pass
+
     try:
         from app.db.client import get_db
 
@@ -255,9 +299,22 @@ async def searcher_node(state: PipelineState) -> dict:
         result = await query.limit(200).execute()
         db_listings = result.data or []
         log.info("searcher_db_read", count=len(db_listings))
+
+        if db_source:
+            db_source["status"] = "done"
+            db_source["count"] = len(db_listings)
     except Exception as e:
         errors.append(f"searcher_node: DB read failed — {e}")
         log.error("searcher_db_failed", error=str(e))
+        if db_source:
+            db_source["status"] = "error"
+
+    # Push final sources state
+    if sources:
+        try:
+            await update_pipeline_step(search_id, "fetching", {"sources": sources})
+        except Exception:
+            pass
 
     # --- Step 3: Merge and deduplicate ---
     all_listings = scraped_listings + db_listings
@@ -326,6 +383,39 @@ async def searcher_node(state: PipelineState) -> dict:
                 log.info("searcher_upserted", count=len(upsert_rows))
         except Exception as e:
             errors.append(f"searcher_node: DB upsert failed — {e}")
+
+    # --- Step 8: Ensure every listing has a DB id ---
+    # Scraped listings lack the Supabase-generated UUID `id` field.
+    # Read back IDs for any listing missing one so downstream scoring/persistence works.
+    listings_missing_id = [l for l in all_listings if not l.get("id")]
+    if listings_missing_id:
+        try:
+            from app.db.client import get_db
+            db = await get_db()
+
+            ext_ids = [l["external_id"] for l in listings_missing_id if l.get("external_id")]
+            if ext_ids:
+                result = await (
+                    db.table("listings")
+                    .select("id, external_id, source")
+                    .in_("external_id", ext_ids)
+                    .execute()
+                )
+                id_map: dict[tuple[str, str], str] = {
+                    (r["external_id"], r["source"]): r["id"]
+                    for r in (result.data or [])
+                }
+                filled = 0
+                for lst in all_listings:
+                    if not lst.get("id"):
+                        key = (lst.get("external_id", ""), lst.get("source", ""))
+                        db_id = id_map.get(key)
+                        if db_id:
+                            lst["id"] = db_id
+                            filled += 1
+                log.info("searcher_ids_filled", needed=len(listings_missing_id), filled=filled)
+        except Exception as e:
+            errors.append(f"searcher_node: ID backfill failed — {e}")
 
     duration_ms = round((time.monotonic() - t0) * 1000)
     log.info(

@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import { useSearchPolling } from "@/hooks/useSearchPolling";
+import type { SourceStatus } from "@/types";
 
 // ── Step definitions ─────────────────────────────────────────────────────────
 
@@ -30,8 +31,8 @@ const STEPS: StepDef[] = [
   {
     id: "fetching",
     title: "Поиск объявлений",
-    subtitle: "Сканируем Krisha.kz и OLX.kz",
-    detail: "Загружаем коммерческие помещения по вашим параметрам из открытых площадок",
+    subtitle: "Сканируем открытые площадки",
+    detail: "Загружаем коммерческие помещения по вашим параметрам",
     icon: (
       <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="11" cy="11" r="8" />
@@ -103,7 +104,6 @@ function getStepStatuses(pipelineStatus: string | null): StepStatus[] {
   }
 
   if (idx === -1) {
-    // pending or unknown — first step active
     if (pipelineStatus === "pending") statuses[0] = "active";
     return statuses;
   }
@@ -136,11 +136,118 @@ function PulseDots() {
   );
 }
 
+// ── Source status icon ───────────────────────────────────────────────────────
+
+function SourceIcon({ status }: { status: SourceStatus["status"] }) {
+  if (status === "done") {
+    return (
+      <svg width="12" height="12" fill="none" viewBox="0 0 12 12" style={{ flexShrink: 0 }}>
+        <path d="M2 6l3 3 5-5" stroke="var(--accent-green)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    );
+  }
+  if (status === "active") {
+    return (
+      <span
+        style={{
+          width: 10,
+          height: 10,
+          borderRadius: "50%",
+          border: "1.5px solid var(--accent-blue)",
+          borderTopColor: "transparent",
+          animation: "spin 0.8s linear infinite",
+          display: "inline-block",
+          flexShrink: 0,
+        }}
+      />
+    );
+  }
+  if (status === "error") {
+    return (
+      <svg width="12" height="12" fill="none" viewBox="0 0 12 12" style={{ flexShrink: 0 }}>
+        <path d="M3 3l6 6M9 3l-6 6" stroke="var(--accent-orange)" strokeWidth="1.5" strokeLinecap="round" />
+      </svg>
+    );
+  }
+  return (
+    <span
+      className="rounded-full"
+      style={{
+        width: 6,
+        height: 6,
+        backgroundColor: "var(--neutral-10)",
+        opacity: 0.3,
+        flexShrink: 0,
+      }}
+    />
+  );
+}
+
+// ── Sources list (shown inside fetching step) ────────────────────────────────
+
+function SourcesList({ sources }: { sources: SourceStatus[] }) {
+  return (
+    <div className="flex flex-col" style={{ gap: 6, paddingLeft: 44, marginTop: 8 }}>
+      {sources.map((src) => (
+        <div
+          key={src.id}
+          className="flex items-center"
+          style={{
+            gap: 8,
+            opacity: src.status === "pending" ? 0.5 : 1,
+            transition: "opacity 0.3s ease",
+          }}
+        >
+          <SourceIcon status={src.status} />
+          <span
+            style={{
+              fontSize: 12,
+              color: src.status === "active"
+                ? "var(--neutral-30)"
+                : src.status === "done"
+                  ? "var(--neutral-20)"
+                  : "var(--neutral-10)",
+              fontWeight: src.status === "active" ? 500 : 400,
+              transition: "color 0.3s ease",
+            }}
+          >
+            {src.label}
+          </span>
+          {src.status === "done" && src.count > 0 && (
+            <span
+              className="rounded-full"
+              style={{
+                fontSize: 10,
+                color: "var(--accent-green)",
+                backgroundColor: "rgba(22,163,74,0.08)",
+                padding: "1px 7px",
+                fontWeight: 600,
+              }}
+            >
+              {src.count}
+            </span>
+          )}
+          {src.status === "active" && <PulseDots />}
+        </div>
+      ))}
+    </div>
+  );
+}
+
 // ── Step row ─────────────────────────────────────────────────────────────────
 
-function StepRow({ step, status }: { step: StepDef; status: StepStatus }) {
+function StepRow({
+  step,
+  status,
+  children,
+}: {
+  step: StepDef;
+  status: StepStatus;
+  children?: React.ReactNode;
+}) {
   const isActive = status === "active";
   const isDone = status === "done";
+  const hasChildren = !!children;
 
   return (
     <div
@@ -213,7 +320,7 @@ function StepRow({ step, status }: { step: StepDef; status: StepStatus }) {
             >
               {step.title}
             </span>
-            {isActive && <PulseDots />}
+            {isActive && !hasChildren && <PulseDots />}
           </div>
           <span
             style={{
@@ -227,7 +334,7 @@ function StepRow({ step, status }: { step: StepDef; status: StepStatus }) {
           </span>
         </div>
 
-        {/* Timestamp for done */}
+        {/* Check for done */}
         {isDone && (
           <svg
             width="14"
@@ -247,26 +354,30 @@ function StepRow({ step, status }: { step: StepDef; status: StepStatus }) {
         )}
       </div>
 
-      {/* Expanded detail for active step */}
+      {/* Expanded detail or children for active step */}
       <div
         style={{
-          maxHeight: isActive ? 60 : 0,
+          maxHeight: isActive ? 300 : 0,
           opacity: isActive ? 1 : 0,
           overflow: "hidden",
           transition: "all 0.4s cubic-bezier(0.4,0,0.2,1)",
-          paddingLeft: 44,
         }}
       >
-        <p
-          style={{
-            fontSize: 12,
-            color: "var(--neutral-10)",
-            lineHeight: 1.5,
-            marginTop: 6,
-          }}
-        >
-          {step.detail}
-        </p>
+        {hasChildren ? (
+          children
+        ) : (
+          <p
+            style={{
+              fontSize: 12,
+              color: "var(--neutral-10)",
+              lineHeight: 1.5,
+              marginTop: 6,
+              paddingLeft: 44,
+            }}
+          >
+            {step.detail}
+          </p>
+        )}
       </div>
     </div>
   );
@@ -305,6 +416,7 @@ function ProgressBar({ statuses }: { statuses: StepStatus[] }) {
 export function PipelineProgress() {
   const { data } = useSearchPolling();
   const pipelineStatus = data?.status ?? null;
+  const statusMeta = data?.status_meta ?? null;
   const stepStatuses = getStepStatuses(pipelineStatus);
 
   const [elapsed, setElapsed] = useState(0);
@@ -316,7 +428,6 @@ export function PipelineProgress() {
     return () => clearInterval(interval);
   }, []);
 
-  // Log step transitions for smooth feeling
   useEffect(() => {
     prevStatusRef.current = pipelineStatus;
   }, [pipelineStatus]);
@@ -327,6 +438,10 @@ export function PipelineProgress() {
 
   const errorMessage = data?.error_message;
   const doneCount = stepStatuses.filter((s) => s === "done").length;
+  const isComplete = pipelineStatus === "complete";
+
+  // Sources from status_meta (shown during fetching step)
+  const sources: SourceStatus[] | null = statusMeta?.sources ?? null;
 
   return (
     <div className="flex flex-col" style={{ gap: 20, padding: "24px 20px" }}>
@@ -337,11 +452,11 @@ export function PipelineProgress() {
             className="font-semibold"
             style={{ fontSize: 17, color: "var(--neutral-30)" }}
           >
-            Анализируем рынок
+            {isComplete ? "Готово!" : "Анализируем рынок"}
           </h3>
           <p style={{ fontSize: 12, color: "var(--neutral-10)" }}>
-            {doneCount === STEPS.length
-              ? "Готово!"
+            {isComplete
+              ? "Подготавливаем результаты…"
               : `Шаг ${doneCount + 1} из ${STEPS.length} · ~30–60 сек`}
           </p>
         </div>
@@ -362,11 +477,56 @@ export function PipelineProgress() {
       {/* Progress bar */}
       <ProgressBar statuses={stepStatuses} />
 
-      {/* Steps */}
-      <div className="flex flex-col" style={{ gap: 2 }}>
-        {STEPS.map((step, i) => (
-          <StepRow key={step.id} step={step} status={stepStatuses[i]} />
-        ))}
+      {/* Steps — always visible, overlay when complete */}
+      <div className="relative">
+        <div className="flex flex-col" style={{ gap: 2 }}>
+          {STEPS.map((step, i) => {
+            const isFetchingActive = step.id === "fetching" && stepStatuses[i] === "active";
+            const isFetchingDone = step.id === "fetching" && stepStatuses[i] === "done";
+
+            return (
+              <StepRow key={step.id} step={step} status={stepStatuses[i]}>
+                {/* Show live sources list during fetching */}
+                {(isFetchingActive || isFetchingDone) && sources && sources.length > 0
+                  ? <SourcesList sources={sources} />
+                  : undefined}
+              </StepRow>
+            );
+          })}
+        </div>
+
+        {/* Frosted overlay + preparing text when complete */}
+        {isComplete && (
+          <div
+            className="absolute inset-0 flex items-center justify-center rounded-2xl"
+            style={{
+              backgroundColor: "rgba(249, 248, 248, 0.82)",
+              backdropFilter: "blur(3px)",
+              transition: "opacity 0.5s ease",
+            }}
+          >
+            <div className="flex items-center" style={{ gap: 10 }}>
+              <span
+                style={{
+                  width: 14,
+                  height: 14,
+                  borderRadius: "50%",
+                  border: "2px solid var(--neutral-10)",
+                  borderTopColor: "transparent",
+                  animation: "spin 0.8s linear infinite",
+                  display: "inline-block",
+                  flexShrink: 0,
+                }}
+              />
+              <span
+                className="font-medium"
+                style={{ fontSize: 15, color: "var(--neutral-20)" }}
+              >
+                Подготавливаем результаты…
+              </span>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Error */}

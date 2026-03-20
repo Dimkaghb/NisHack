@@ -62,6 +62,17 @@ export interface SearchResponse {
   message: string;
 }
 
+export interface SourceStatus {
+  id: string;
+  label: string;
+  status: "pending" | "active" | "done" | "error";
+  count: number;
+}
+
+export interface StatusMeta {
+  sources?: SourceStatus[];
+}
+
 export interface PollResponse {
   session_id: string;
   status: string;
@@ -71,6 +82,7 @@ export interface PollResponse {
   total_evaluated: number;
   explanation: string;
   error_message: string | null;
+  status_meta: StatusMeta | null;
   results: ScoredListing[];
 }
 

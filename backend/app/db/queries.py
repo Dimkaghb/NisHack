@@ -100,16 +100,22 @@ async def get_enriched_listings_count() -> int:
     return result.count or 0
 
 
-async def update_pipeline_step(search_id: str, step: str) -> None:
+async def update_pipeline_step(
+    search_id: str, step: str, meta: dict | None = None
+) -> None:
     """Update the pipeline step for a search session.
 
     Called from pipeline nodes to provide real-time progress tracking.
+    meta is optional JSONB for sub-step details (e.g. sources being scraped).
     """
     db = await get_db()
+    payload: dict = {"status": step}
+    if meta is not None:
+        payload["status_meta"] = meta
     await (
         db.table("search_sessions")
-        .update({"status": step})
+        .update(payload)
         .eq("id", search_id)
         .execute()
     )
-    log.debug("pipeline_step_updated", search_id=search_id, step=step)
+    log.debug("pipeline_step_updated", search_id=search_id, step=step, meta=meta)

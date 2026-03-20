@@ -157,6 +157,7 @@ async def get_search_status(session_id: str) -> SearchSessionStatus:
         total_evaluated=session.get("total_evaluated") or 0,
         explanation=session.get("explanation") or "",
         error_message=session.get("error_message"),
+        status_meta=session.get("status_meta"),
         results=results,
     )
 

@@ -35,10 +35,13 @@ export function useSearchPolling() {
     const { status, results, explanation } = query.data;
     setPipelineStatus(status);
 
-    if (status === "complete" && results && results.length > 0) {
-      setListings(results);
+    if (status === "complete") {
+      if (results && results.length > 0) {
+        setListings(results);
+      }
       if (explanation) setExplanation(explanation);
-      setAppState("results");
+      // Small delay for "preparing results" transition
+      setTimeout(() => setAppState("results"), 1200);
     } else if (status === "failed") {
       setAppState("idle");
     }
